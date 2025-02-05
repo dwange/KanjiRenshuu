@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(goToDrawViewController), for: .touchUpInside)
+        button.addTarget(self, action: #selector(goToSelectKanjiViewController), for: .touchUpInside)
         
         return button
     }()
@@ -69,9 +69,9 @@ class ViewController: UIViewController {
     }
 
     //MARK: - Private methods
-    
-    @objc private func goToDrawViewController() {
-        navigationController?.pushViewController(DrawViewController(), animated: true)
+
+    @objc private func goToSelectKanjiViewController() {
+        navigationController?.pushViewController(SelectKanjiViewController(), animated: true)
 
      }
      

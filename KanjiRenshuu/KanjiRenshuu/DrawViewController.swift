@@ -7,10 +7,9 @@
 
 import UIKit
 import SnapKit
-import Combine
 
 class DrawViewController: UIViewController {
-   
+    
     //MARK: - GUI Variables
     
     private let stackView: UIStackView = {
@@ -34,8 +33,8 @@ class DrawViewController: UIViewController {
     private let translationLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .boldSystemFont(ofSize: 40)
-
+        label.font = .boldSystemFont(ofSize: 20)
+        
         return label
     }()
     
@@ -58,27 +57,23 @@ class DrawViewController: UIViewController {
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
         button.translatesAutoresizingMaskIntoConstraints = false
-   //     button.addTarget(self, action: #selector(), for: .touchUpInside)
-
         
         return button
     }()
     
     //MARK: - Properties
     
+    var kanji: String?
     private var kanjiDetailManager = KanjiDetailManager()
-    private var cancellables = Set<AnyCancellable>()
-            
+    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
-        
-        bindToKanjiDetails()
-         
-        kanjiDetailManager.fetchKanjiDetails(kanji: "水")  // TODO: - change example for the real object
-     }
+
+        fetchKanjiData()
+    }
     
     //MARK: - Private methods
     
@@ -108,23 +103,30 @@ class DrawViewController: UIViewController {
             make.width.equalTo(stackView.snp.width).multipliedBy(0.75)
             make.bottom.equalToSuperview().inset(20)
         }
-
-        }
-
-//MARK: - Combine methods
-    
-    func bindToKanjiDetails() {
-        kanjiDetailManager.kanjiPublisher
-            .sink { [weak self] kanjiObject in
-                if let kanjiObject = kanjiObject {
-                    self?.updateUI(with: kanjiObject)
-                }
-            }
-            .store(in: &cancellables)
+        
     }
     
+    func fetchKanjiData() {
+        guard let kanji = kanji else { return }
+        
+        kanjiDetailManager.fetchKanjiDetails(kanji: kanji) { [weak self] kanjiObject in
+            guard let self = self else { return }
+            if let kanjiObject = kanjiObject {
+                self.updateUI(with: kanjiObject)
+            } else {
+                self.showError()
+            }
+        }
+    }
+
     func updateUI(with kanjiObject: KanjiObject) {
-        self.translationLabel.text = kanjiObject.meanings.joined(separator: ", ")
-        self.kanjiLabel.text = kanjiObject.kanji
+        kanjiLabel.text = kanjiObject.kanji
+        translationLabel.text = kanjiObject.meanings.joined(separator: ", ")
+    }
+
+    func showError() {
+        // Handle error (e.g., show an alert to the user)
+        kanjiLabel.text = "Error"
+        translationLabel.text = "Unable to fetch data"
     }
 }
