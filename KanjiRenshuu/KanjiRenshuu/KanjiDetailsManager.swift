@@ -6,26 +6,18 @@
 //
 
 import Foundation
-import Combine
 
-class KanjiDetailManager: ObservableObject {
-    
-    private var cancellables = Set<AnyCancellable>()
-    private var kanjiSubject = CurrentValueSubject<KanjiObject?, Never>(nil)  // Publisher
+class KanjiDetailManager {
     
     let kanjiURL = "https://kanjiapi.dev/v1/kanji/"
-    
-    var kanjiPublisher: AnyPublisher<KanjiObject?, Never> {
-            return kanjiSubject.eraseToAnyPublisher()
-        }
-    
-    func fetchKanjiDetails(kanji: String) {
+ 
+    func fetchKanjiDetails(kanji: String, completion: @escaping (KanjiObject?) -> Void) {
         let urlString = "\(kanjiURL)\(kanji)"
-        performDetailsRequest(with: urlString)
+        performDetailsRequest(with: urlString, completion: completion)
         print(urlString)
     }
     
-    func performDetailsRequest(with urlString: String) {
+    func performDetailsRequest(with urlString: String, completion: @escaping (KanjiObject?) -> Void) {
         
         if let url = URL(string: urlString) {
             
@@ -40,10 +32,11 @@ class KanjiDetailManager: ObservableObject {
                     do {
                         let decodedData = try decoder.decode(KanjiObject.self, from: safeData)
                         DispatchQueue.main.async {
-                            self.kanjiSubject.send(decodedData)
+                            completion(decodedData)
                         }
                     } catch {
                         print("Error decoding JSON: \(error)")
+                        completion(nil)
                     }
                 }
             }
