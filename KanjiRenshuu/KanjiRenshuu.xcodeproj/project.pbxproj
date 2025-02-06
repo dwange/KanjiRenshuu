@@ -76,16 +76,15 @@
 		960C74FF2D3FBA8A00658569 /* KanjiRenshuu */ = {
 			isa = PBXGroup;
 			children = (
+				960C750B2D3FBA8F00658569 /* LaunchScreen.storyboard */,
 				960C75002D3FBA8A00658569 /* AppDelegate.swift */,
 				960C75042D3FBA8A00658569 /* ViewController.swift */,
-				969B39CC2D52961A008CE2DC /* SelectKanjiViewController.swift */,
-				963DB8F32D5366CC0045A809 /* SelectKanjiViewCell.swift */,
-				96CD6F802D41084E0005F72E /* DrawViewController.swift */,
-				96CD6F822D4108660005F72E /* MatchViewController.swift */,
-				960C750B2D3FBA8F00658569 /* LaunchScreen.storyboard */,
-				969B39CB2D527DEA008CE2DC /* Extentions */,
+				96D5B0552D54C10F0019321D /* SelectKanji */,
+				96D5B0562D54C12A0019321D /* DrawKanji */,
+				96D5B0572D54C13A0019321D /* MatchKanji */,
 				969B39C52D527C97008CE2DC /* Model */,
 				969B39C82D527D03008CE2DC /* ViewModel */,
+				969B39CB2D527DEA008CE2DC /* Extentions */,
 			);
 			path = KanjiRenshuu;
 			sourceTree = "<group>";
@@ -114,6 +113,31 @@
 				969B39C12D515EE7008CE2DC /* UIStackView extentions.swift */,
 			);
 			name = Extentions;
+			sourceTree = "<group>";
+		};
+		96D5B0552D54C10F0019321D /* SelectKanji */ = {
+			isa = PBXGroup;
+			children = (
+				969B39CC2D52961A008CE2DC /* SelectKanjiViewController.swift */,
+				963DB8F32D5366CC0045A809 /* SelectKanjiViewCell.swift */,
+			);
+			name = SelectKanji;
+			sourceTree = "<group>";
+		};
+		96D5B0562D54C12A0019321D /* DrawKanji */ = {
+			isa = PBXGroup;
+			children = (
+				96CD6F802D41084E0005F72E /* DrawViewController.swift */,
+			);
+			name = DrawKanji;
+			sourceTree = "<group>";
+		};
+		96D5B0572D54C13A0019321D /* MatchKanji */ = {
+			isa = PBXGroup;
+			children = (
+				96CD6F822D4108660005F72E /* MatchViewController.swift */,
+			);
+			name = MatchKanji;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
