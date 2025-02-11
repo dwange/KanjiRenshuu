@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class SelectKanjiViewController: UIViewController {
-   
+    
     //MARK: - GUI Variables
     
     private lazy var collectionView: UICollectionView = {
@@ -20,10 +20,10 @@ class SelectKanjiViewController: UIViewController {
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height), collectionViewLayout: layout)
-       
+        
         collectionView.backgroundColor = .white
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -46,7 +46,7 @@ class SelectKanjiViewController: UIViewController {
     
     //MARK: - Private methods
     
-    func setupUI() {
+    private func setupUI() {
         view.addSubview(collectionView)
         
         collectionView.register(SelectKanjiViewCell.self, forCellWithReuseIdentifier: "SelectKanjiViewCell")
@@ -54,7 +54,7 @@ class SelectKanjiViewController: UIViewController {
         setupConstraints()
     }
     
-    func setupConstraints() {
+    private func setupConstraints() {
         collectionView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
@@ -78,7 +78,7 @@ extension SelectKanjiViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
     }
-        
+    
 }
 
 //MARK: - UICollectionViewDataSource
@@ -98,15 +98,15 @@ extension SelectKanjiViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            return CGSize(width: 80, height: 80)
-        }
+        return CGSize(width: 80, height: 80)
+    }
     
 }
 
 //MARK: - SelectKanjiViewCellDelegate
 
 extension SelectKanjiViewController: SelectKanjiViewCellDelegate {
-   
+    
     func didTapKanjiButton(kanji: String) {
         let drawVC = DrawViewController()
         drawVC.kanji = kanji

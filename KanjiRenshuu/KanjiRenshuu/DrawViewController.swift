@@ -30,6 +30,15 @@ class DrawViewController: UIViewController {
         return label
     }()
     
+    private let translationStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 4
+        stackView.alignment = .center
+        
+        return stackView
+    }()
+    
     private let translationLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -38,10 +47,47 @@ class DrawViewController: UIViewController {
         return label
     }()
     
-    private let drawingView: UIView = {
-        let view = UIView()
+    private let moreButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("...", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        button.addTarget(self, action: #selector(toggleTranslation), for: .touchUpInside)
+        return button
+    }()
+    
+    private let drawingView: DrawingView = {
+        let view = DrawingView()
+        view.backgroundColor = .white
         
         return view
+    }()
+    
+    private let buttonStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 20
+        stackView.alignment = .center
+        stackView.distribution = .fillEqually
+        
+        return stackView
+    }()
+    
+    private let retryButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .systemCyan
+        button.layer.cornerRadius = 15
+        button.setTitle("Retry".uppercased(), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: "Arial Bold", size: 15)
+        button.layer.shadowColor = UIColor.systemCyan.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowRadius = 5
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(clearDrawing), for: .touchUpInside)
+        
+        return button
     }()
     
     private let continueButton: UIButton = {
@@ -66,12 +112,14 @@ class DrawViewController: UIViewController {
     var kanji: String?
     private var kanjiDetailManager = KanjiDetailManager()
     
-    //MARK: - Lifecycle
+    private var isExpanded = false
+    private var fullTranslationText: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
-
+        
         fetchKanjiData()
     }
     
@@ -80,7 +128,14 @@ class DrawViewController: UIViewController {
     func configureUI() {
         view.backgroundColor = .white
         view.addSubview(stackView)
-        stackView.addArrangedSubviews([kanjiLabel, translationLabel, drawingView, continueButton])
+        
+        stackView.addArrangedSubviews([kanjiLabel,
+                                       translationStackView,
+                                       drawingView,
+                                       buttonStackView])
+        translationStackView.addArrangedSubviews([translationLabel, moreButton])
+        buttonStackView.addArrangedSubviews([retryButton, continueButton])
+        
         setupConstraints()
     }
     
@@ -94,16 +149,60 @@ class DrawViewController: UIViewController {
             make.height.equalTo(stackView.snp.height).multipliedBy(0.25)
         }
         
-        drawingView.snp.makeConstraints { make in
-            make.height.equalTo(stackView.snp.height).multipliedBy(0.5)
+        translationStackView.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(0.8)
         }
         
-        continueButton.snp.makeConstraints { make in
+        translationLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.lessThanOrEqualTo(moreButton.snp.leading).offset(-4)
+        }
+        
+        moreButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview()
+        }
+        
+        drawingView.snp.makeConstraints { make in
+            make.top.equalTo(translationLabel.snp.bottom).offset(20)
+            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(view.safeAreaLayoutGuide.snp.height).multipliedBy(0.5)
+        }
+        
+        buttonStackView.snp.makeConstraints { make in
             make.height.equalTo(40)
             make.width.equalTo(stackView.snp.width).multipliedBy(0.75)
-            make.bottom.equalToSuperview().inset(20)
         }
         
+    }
+    
+    @objc private func clearDrawing() {
+        drawingView.clear()
+    }
+    
+    @objc private func toggleTranslation() {
+        if fullTranslationText.split(separator: ", ").count > 1 {
+            let popupView = TranslationsPopUpView()
+            popupView.translations = fullTranslationText.split(separator: ", ").dropFirst().map { String($0) }
+            
+            view.addSubview(popupView)
+            popupView.translatesAutoresizingMaskIntoConstraints = false
+            
+            popupView.snp.makeConstraints { make in
+                make.top.equalTo(moreButton.snp.bottom).offset(10)
+                make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
+                make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+                make.height.equalTo(200)
+            }
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissPopup))
+            view.addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    @objc private func dismissPopup() {
+        if let popupView = view.subviews.first(where: { $0 is TranslationsPopUpView }) {
+            popupView.removeFromSuperview()
+        }
     }
     
     func fetchKanjiData() {
@@ -118,12 +217,18 @@ class DrawViewController: UIViewController {
             }
         }
     }
-
+    
     func updateUI(with kanjiObject: KanjiObject) {
         kanjiLabel.text = kanjiObject.kanji
-        translationLabel.text = kanjiObject.meanings.joined(separator: ", ")
+        fullTranslationText = kanjiObject.meanings.joined(separator: ", ")
+        
+        if let firstTranslation = kanjiObject.meanings.first {
+            translationLabel.text = firstTranslation
+        }
+        
+        moreButton.isHidden = kanjiObject.meanings.count <= 1
     }
-
+    
     func showError() {
         // Handle error (e.g., show an alert to the user)
         kanjiLabel.text = "Error"

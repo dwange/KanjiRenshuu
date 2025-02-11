@@ -7,9 +7,9 @@
 
 import Foundation
 
-class KanjiManager: ObservableObject {
+class KanjiManager {
     
-    @Published var kanjiData = [KanjiObject]()
+    var kanjiData = [KanjiObject]()
     let allKanjiURL = "https://kanjiapi.dev/v1/kanji/all"
 
     internal func fetchAllKanji(completion: @escaping ([KanjiObject]) -> Void) {
