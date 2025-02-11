@@ -13,7 +13,7 @@ protocol SelectKanjiViewCellDelegate: AnyObject {
 }
 
 final class SelectKanjiViewCell: UICollectionViewCell {
-       
+    
     //MARK: - GUI Variables
     
     private let kanjiButton: UIButton = {
@@ -33,8 +33,9 @@ final class SelectKanjiViewCell: UICollectionViewCell {
     
     weak var delegate: SelectKanjiViewCellDelegate?
     private var kanji: String = ""
-
-    //MARK: - Initializations
+    
+    //MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -46,7 +47,7 @@ final class SelectKanjiViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-        //MARK: - Private methods
+    //MARK: - Private methods
     
     private func setupUI() {
         addSubview(kanjiButton)
@@ -55,7 +56,7 @@ final class SelectKanjiViewCell: UICollectionViewCell {
     }
     
     private func setupConstraints() {
-
+        
         kanjiButton.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview()
