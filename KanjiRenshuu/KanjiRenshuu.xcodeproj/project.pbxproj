@@ -19,6 +19,8 @@
 		968C04F32D5C995B003BB0DA /* Index->Kanji.json in Resources */ = {isa = PBXBuildFile; fileRef = 968C04F22D5C995B003BB0DA /* Index->Kanji.json */; };
 		968C04F52D5C9B68003BB0DA /* KanjiSVG in Resources */ = {isa = PBXBuildFile; fileRef = 968C04F42D5C9B68003BB0DA /* KanjiSVG */; };
 		969951282D5D0F4C001A3522 /* KanjiSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969951272D5D0F4C001A3522 /* KanjiSectionHeaderView.swift */; };
+		9699512B2D5E1322001A3522 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9699512A2D5E1322001A3522 /* SVGKit */; };
+		9699512D2D5E1322001A3522 /* SVGKitSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9699512C2D5E1322001A3522 /* SVGKitSwift */; };
 		969B39C02D5158DC008CE2DC /* UIView extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969B39BF2D5158DB008CE2DC /* UIView extensions.swift */; };
 		969B39C22D515EE7008CE2DC /* UIStackView extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969B39C12D515EE7008CE2DC /* UIStackView extentions.swift */; };
 		969B39C42D527C93008CE2DC /* KanjiObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969B39C32D527C93008CE2DC /* KanjiObject.swift */; };
@@ -65,6 +67,8 @@
 			files = (
 				9607BA8B2D5136AB0024B76D /* SnapKit in Frameworks */,
 				9607BA8D2D5136AB0024B76D /* SnapKit-Dynamic in Frameworks */,
+				9699512D2D5E1322001A3522 /* SVGKitSwift in Frameworks */,
+				9699512B2D5E1322001A3522 /* SVGKit in Frameworks */,
 				58811BCE1227B943D65981CA /* Pods_KanjiRenshuu.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,6 +207,8 @@
 			packageProductDependencies = (
 				9607BA8A2D5136AB0024B76D /* SnapKit */,
 				9607BA8C2D5136AB0024B76D /* SnapKit-Dynamic */,
+				9699512A2D5E1322001A3522 /* SVGKit */,
+				9699512C2D5E1322001A3522 /* SVGKitSwift */,
 			);
 			productName = KanjiRenshuu;
 			productReference = 960C74FD2D3FBA8A00658569 /* KanjiRenshuu.app */;
@@ -234,6 +240,7 @@
 			mainGroup = 960C74F42D3FBA8A00658569;
 			packageReferences = (
 				9607BA892D5136AB0024B76D /* XCRemoteSwiftPackageReference "SnapKit" */,
+				969951292D5E1322001A3522 /* XCRemoteSwiftPackageReference "SVGKit" */,
 			);
 			productRefGroup = 960C74FE2D3FBA8A00658569 /* Products */;
 			projectDirPath = "";
@@ -548,6 +555,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		969951292D5E1322001A3522 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SVGKit/SVGKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -560,6 +575,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9607BA892D5136AB0024B76D /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = "SnapKit-Dynamic";
+		};
+		9699512A2D5E1322001A3522 /* SVGKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 969951292D5E1322001A3522 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			productName = SVGKit;
+		};
+		9699512C2D5E1322001A3522 /* SVGKitSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 969951292D5E1322001A3522 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			productName = SVGKitSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
