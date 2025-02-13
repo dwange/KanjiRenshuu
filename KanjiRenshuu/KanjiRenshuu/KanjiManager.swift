@@ -11,8 +11,8 @@ class KanjiManager {
     
     var kanjiData = [KanjiObject]()
     let allKanjiURL = "https://kanjiapi.dev/v1/kanji/all"
-
-    internal func fetchAllKanji(completion: @escaping ([KanjiObject]) -> Void) {
+    
+    internal func fetchAllKanji(completion: @escaping ([Int?: [KanjiObject]]) -> Void) {
         if let url = URL(string: allKanjiURL) {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 if error != nil {
@@ -32,11 +32,11 @@ class KanjiManager {
         }
     }
     
-    private func fetchKanjiDetails(for kanjiList: [String], completion: @escaping ([KanjiObject]) -> Void) {
+    private func fetchKanjiDetails(for kanjiList: [String], completion: @escaping ([Int?: [KanjiObject]]) -> Void) {
         let group = DispatchGroup()
         var detailedKanjiList = [KanjiObject]()
         
-        for kanji in kanjiList.prefix(20) {
+        for kanji in kanjiList {
             group.enter()
             let urlString = "https://kanjiapi.dev/v1/kanji/\(kanji)"
             if let url = URL(string: urlString) {
@@ -63,7 +63,9 @@ class KanjiManager {
         }
         
         group.notify(queue: .main) {
-            completion(detailedKanjiList)
+            let groupedKanji = Dictionary(grouping: detailedKanjiList, by: { $0.grade })
+            completion(groupedKanji)
         }
     }
 }
+

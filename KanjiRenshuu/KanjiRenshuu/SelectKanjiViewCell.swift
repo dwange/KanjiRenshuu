@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 protocol SelectKanjiViewCellDelegate: AnyObject {
+    
     func didTapKanjiButton(kanji: String)
 }
 
@@ -25,6 +26,7 @@ final class SelectKanjiViewCell: UICollectionViewCell {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(kanjiButtonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -40,7 +42,6 @@ final class SelectKanjiViewCell: UICollectionViewCell {
         super.init(frame: frame)
         
         setupUI()
-        kanjiButton.addTarget(self, action: #selector(kanjiButtonTapped), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -56,20 +57,21 @@ final class SelectKanjiViewCell: UICollectionViewCell {
     }
     
     private func setupConstraints() {
-        
         kanjiButton.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview()
         }
     }
     
+    @objc private func kanjiButtonTapped() {
+        delegate?.didTapKanjiButton(kanji: kanji)
+    }
+    
+    //MARK: - Methods
+    
     func configure(with kanjiObject: KanjiObject) {
         kanji = kanjiObject.kanji
         kanjiButton.setTitle(kanji, for: .normal)
-    }
-    
-    @objc private func kanjiButtonTapped() {
-        delegate?.didTapKanjiButton(kanji: kanji)
     }
 }
 
