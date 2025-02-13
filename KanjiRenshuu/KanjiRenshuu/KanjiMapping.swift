@@ -31,10 +31,5 @@ func loadKanjiMapping() -> [String: [String]] {
 }
 
 func findSvgFileName(for kanji: String, in mapping: [String: [String]]) -> String? {
-    for (character, fileNames) in mapping {
-        if fileNames.contains(kanji) {
-            return character
-        }
-    }
-    return nil
+    return mapping[kanji]?.first
 }

@@ -6,16 +6,17 @@
 //
 
 import UIKit
-import SwiftSVG
+import SVGKit
+import SnapKit
 
 class DrawingView: UIView {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private var strokes: [[CGPoint]] = [[]]
-    private var svgView: UIView?
+    private var svgView: SVGKImageView?
     
-    //MARK: - Initializers
+    // MARK: - Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,7 +38,7 @@ class DrawingView: UIView {
             return
         }
         
-        guard let fileName = mapping[kanji]?.first else {
+        guard let fileName = findSvgFileName(for: kanji, in: mapping) else {
             print("SVG not found for kanji: \(kanji)")
             return
         }
@@ -46,25 +47,29 @@ class DrawingView: UIView {
             print("Could not find SVG file: \(fileName) in bundle.")
             return
         }
+        
+        let svgImage = SVGKImage(contentsOf: url)
+        
+        let kanjiBlueprint = SVGKFastImageView(svgkImage: svgImage)
+        kanjiBlueprint?.contentMode = .scaleAspectFit
+        kanjiBlueprint?.translatesAutoresizingMaskIntoConstraints = false
+        kanjiBlueprint?.alpha = 0.2
+        
+        if let svgImageView = kanjiBlueprint {
+            self.addSubview(svgImageView)
+            self.svgView = svgImageView
             
-            let svgView = UIView(SVGURL: url)
-            svgView.alpha = 0.2
-            
-            svgView.contentMode = .scaleAspectFit
-            addSubview(svgView)
-            self.svgView = svgView
-
-            // Layout SVG View
-            svgView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                svgView.centerXAnchor.constraint(equalTo: centerXAnchor),
-                svgView.centerYAnchor.constraint(equalTo: centerYAnchor),
-                svgView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
-                svgView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.8)
-            ])
+            svgImageView.snp.makeConstraints { make in
+                make.center.equalToSuperview()
+                make.width.equalToSuperview()
+                make.height.equalToSuperview()
+            }
+        } else {
+            print("Failed to create SVGKFastImageView from SVGKImage")
         }
+    }
     
-    //MARK: -  Methods
+    // MARK: - Methods
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
@@ -83,7 +88,7 @@ class DrawingView: UIView {
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
         context.setStrokeColor(UIColor.black.cgColor)
-        context.setLineWidth(6)
+        context.setLineWidth(8)
         context.setLineCap(.round)
         
         for stroke in strokes {
@@ -100,5 +105,11 @@ class DrawingView: UIView {
     func clear() {
         strokes = [[]]
         setNeedsDisplay()
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func findSvgFileName(for kanji: String, in mapping: [String: [String]]) -> String? {
+        return mapping[kanji]?.first
     }
 }
