@@ -114,13 +114,17 @@ class DrawViewController: UIViewController {
     
     private var isExpanded = false
     private var fullTranslationText: String = ""
+    private var kanjiMapping = loadKanjiMapping()
     
+    //MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
         
         fetchKanjiData()
+        drawingView.loadKanjiSVG(for: kanji, from: kanjiMapping)
     }
     
     //MARK: - Private methods
@@ -155,7 +159,7 @@ class DrawViewController: UIViewController {
         
         translationLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.trailing.lessThanOrEqualTo(moreButton.snp.leading).offset(-4)
+            make.trailing.lessThanOrEqualTo(moreButton.snp.leading).offset(-4).priority(.low)
         }
         
         moreButton.snp.makeConstraints { make in
@@ -222,11 +226,14 @@ class DrawViewController: UIViewController {
         kanjiLabel.text = kanjiObject.kanji
         fullTranslationText = kanjiObject.meanings.joined(separator: ", ")
         
-        if let firstTranslation = kanjiObject.meanings.first {
-            translationLabel.text = firstTranslation
+        if kanjiObject.meanings.isEmpty {
+            translationLabel.text = "No translation available"
+            translationLabel.textColor = .gray
+            moreButton.isHidden = true
+        } else {
+            translationLabel.text = kanjiObject.meanings.first
+            moreButton.isHidden = kanjiObject.meanings.count <= 1
         }
-        
-        moreButton.isHidden = kanjiObject.meanings.count <= 1
     }
     
     func showError() {

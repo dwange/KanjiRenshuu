@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import SwiftSVG
 
 class DrawingView: UIView {
     
     //MARK: - Properties
     
     private var strokes: [[CGPoint]] = [[]]
+    private var svgView: UIView?
     
     //MARK: - Initializers
     
@@ -26,6 +28,41 @@ class DrawingView: UIView {
         backgroundColor = .white
         isUserInteractionEnabled = true
     }
+    
+    // MARK: - SVG Loading
+    
+    func loadKanjiSVG(for kanji: String?, from mapping: [String: [String]]) {
+        guard let kanji = kanji else {
+            print("Kanji is nil.")
+            return
+        }
+        
+        guard let fileName = mapping[kanji]?.first else {
+            print("SVG not found for kanji: \(kanji)")
+            return
+        }
+        
+        guard let url = Bundle.main.url(forResource: "KanjiSVG/\(fileName)", withExtension: nil) else {
+            print("Could not find SVG file: \(fileName) in bundle.")
+            return
+        }
+            
+            let svgView = UIView(SVGURL: url)
+            svgView.alpha = 0.2
+            
+            svgView.contentMode = .scaleAspectFit
+            addSubview(svgView)
+            self.svgView = svgView
+
+            // Layout SVG View
+            svgView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                svgView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                svgView.centerYAnchor.constraint(equalTo: centerYAnchor),
+                svgView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
+                svgView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.8)
+            ])
+        }
     
     //MARK: -  Methods
     
