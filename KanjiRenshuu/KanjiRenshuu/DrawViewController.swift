@@ -30,6 +30,19 @@ class DrawViewController: UIViewController {
         return label
     }()
     
+    private let readingsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = .boldSystemFont(ofSize: 15)
+        label.textColor = .systemGray
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        
+        return label
+    }()
+    
     private let translationStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -103,6 +116,7 @@ class DrawViewController: UIViewController {
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(showNextKanji), for: .touchUpInside)
         
         return button
     }()
@@ -111,6 +125,7 @@ class DrawViewController: UIViewController {
     
     var kanji: String?
     private var kanjiDetailManager = KanjiDetailManager()
+    var kanjiGroup: [KanjiObject] = []
     
     private var isExpanded = false
     private var fullTranslationText: String = ""
@@ -134,6 +149,7 @@ class DrawViewController: UIViewController {
         view.addSubview(stackView)
         
         stackView.addArrangedSubviews([kanjiLabel,
+                                       readingsLabel,
                                        translationStackView,
                                        drawingView,
                                        buttonStackView])
@@ -151,6 +167,10 @@ class DrawViewController: UIViewController {
         
         kanjiLabel.snp.makeConstraints { make in
             make.height.equalTo(stackView.snp.height).multipliedBy(0.25)
+        }
+        
+        readingsLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
         }
         
         translationStackView.snp.makeConstraints { make in
@@ -209,6 +229,15 @@ class DrawViewController: UIViewController {
         }
     }
     
+    @objc private func showNextKanji() {
+        guard !kanjiGroup.isEmpty else { return }
+            
+            let randomKanji = kanjiGroup.randomElement()
+            kanji = randomKanji?.kanji
+            fetchKanjiData()
+            drawingView.loadKanjiSVG(for: kanji, from: kanjiMapping)
+    }
+    
     func fetchKanjiData() {
         guard let kanji = kanji else { return }
         
@@ -224,6 +253,7 @@ class DrawViewController: UIViewController {
     
     func updateUI(with kanjiObject: KanjiObject) {
         kanjiLabel.text = kanjiObject.kanji
+        readingsLabel.text = "\(kanjiObject.on_readings.joined(separator: ", ")), \(kanjiObject.kun_readings.joined(separator: ", "))"
         fullTranslationText = kanjiObject.meanings.joined(separator: ", ")
         
         if kanjiObject.meanings.isEmpty {
@@ -237,7 +267,6 @@ class DrawViewController: UIViewController {
     }
     
     func showError() {
-        // Handle error (e.g., show an alert to the user)
         kanjiLabel.text = "Error"
         translationLabel.text = "Unable to fetch data"
     }

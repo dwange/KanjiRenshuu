@@ -157,10 +157,18 @@ extension SelectKanjiViewController: UICollectionViewDataSource {
 //MARK: - SelectKanjiViewCellDelegate
 
 extension SelectKanjiViewController: SelectKanjiViewCellDelegate {
-    
+        
     func didTapKanjiButton(kanji: String) {
         let drawVC = DrawViewController()
         drawVC.kanji = kanji
+        
+        // Find the kanji group of the selected kanji
+        for (_, kanjiList) in kanjiByGrade {
+            if kanjiList.contains(where: { $0.kanji == kanji }) {
+                drawVC.kanjiGroup = kanjiList
+                break
+            }
+        }
         navigationController?.pushViewController(drawVC, animated: true)
     }
 }

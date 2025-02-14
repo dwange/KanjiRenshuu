@@ -55,6 +55,8 @@ class DrawingView: UIView {
         kanjiBlueprint?.translatesAutoresizingMaskIntoConstraints = false
         kanjiBlueprint?.alpha = 0.2
         
+        svgView?.removeFromSuperview()
+        
         if let svgImageView = kanjiBlueprint {
             self.addSubview(svgImageView)
             self.svgView = svgImageView
@@ -67,6 +69,8 @@ class DrawingView: UIView {
         } else {
             print("Failed to create SVGKFastImageView from SVGKImage")
         }
+        
+        clear()
     }
     
     // MARK: - Methods

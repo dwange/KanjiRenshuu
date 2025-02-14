@@ -11,7 +11,7 @@
 		9607BA8B2D5136AB0024B76D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9607BA8A2D5136AB0024B76D /* SnapKit */; };
 		9607BA8D2D5136AB0024B76D /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 9607BA8C2D5136AB0024B76D /* SnapKit-Dynamic */; };
 		960C75012D3FBA8A00658569 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960C75002D3FBA8A00658569 /* AppDelegate.swift */; };
-		960C75052D3FBA8A00658569 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960C75042D3FBA8A00658569 /* ViewController.swift */; };
+		960C75052D3FBA8A00658569 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960C75042D3FBA8A00658569 /* HomeViewController.swift */; };
 		960C750A2D3FBA8F00658569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 960C75092D3FBA8F00658569 /* Assets.xcassets */; };
 		960C750D2D3FBA8F00658569 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 960C750B2D3FBA8F00658569 /* LaunchScreen.storyboard */; };
 		963DB8F42D5366CC0045A809 /* SelectKanjiViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963DB8F32D5366CC0045A809 /* SelectKanjiViewCell.swift */; };
@@ -38,7 +38,7 @@
 		7620727BB50C3F6722A7E50E /* Pods-KanjiRenshuu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiRenshuu.debug.xcconfig"; path = "Target Support Files/Pods-KanjiRenshuu/Pods-KanjiRenshuu.debug.xcconfig"; sourceTree = "<group>"; };
 		960C74FD2D3FBA8A00658569 /* KanjiRenshuu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KanjiRenshuu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		960C75002D3FBA8A00658569 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		960C75042D3FBA8A00658569 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		960C75042D3FBA8A00658569 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		960C75092D3FBA8F00658569 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		960C750C2D3FBA8F00658569 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		960C750E2D3FBA8F00658569 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = KanjiRenshuu/Info.plist; sourceTree = "<group>"; };
@@ -118,17 +118,33 @@
 		960C74FF2D3FBA8A00658569 /* KanjiRenshuu */ = {
 			isa = PBXGroup;
 			children = (
-				960C750B2D3FBA8F00658569 /* LaunchScreen.storyboard */,
 				960C75002D3FBA8A00658569 /* AppDelegate.swift */,
-				960C75042D3FBA8A00658569 /* ViewController.swift */,
-				96D5B0552D54C10F0019321D /* SelectKanji */,
-				96D5B0562D54C12A0019321D /* DrawKanji */,
-				96D5B0572D54C13A0019321D /* MatchKanji */,
+				969951322D5F2C86001A3522 /* View */,
+				960C750B2D3FBA8F00658569 /* LaunchScreen.storyboard */,
 				969B39C52D527C97008CE2DC /* Model */,
 				969B39C82D527D03008CE2DC /* ViewModel */,
 				969B39CB2D527DEA008CE2DC /* Extentions */,
 			);
 			path = KanjiRenshuu;
+			sourceTree = "<group>";
+		};
+		969951312D5F2C64001A3522 /* HomeView */ = {
+			isa = PBXGroup;
+			children = (
+				960C75042D3FBA8A00658569 /* HomeViewController.swift */,
+			);
+			name = HomeView;
+			sourceTree = "<group>";
+		};
+		969951322D5F2C86001A3522 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				969951312D5F2C64001A3522 /* HomeView */,
+				96D5B0552D54C10F0019321D /* SelectKanji */,
+				96D5B0562D54C12A0019321D /* DrawKanji */,
+				96D5B0572D54C13A0019321D /* MatchKanji */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 		969B39C52D527C97008CE2DC /* Model */ = {
@@ -322,7 +338,7 @@
 				969B39C02D5158DC008CE2DC /* UIView extensions.swift in Sources */,
 				963DB8F42D5366CC0045A809 /* SelectKanjiViewCell.swift in Sources */,
 				96CD6F812D41084E0005F72E /* DrawViewController.swift in Sources */,
-				960C75052D3FBA8A00658569 /* ViewController.swift in Sources */,
+				960C75052D3FBA8A00658569 /* HomeViewController.swift in Sources */,
 				960C75012D3FBA8A00658569 /* AppDelegate.swift in Sources */,
 				969B39CA2D527D5C008CE2DC /* KanjiManager.swift in Sources */,
 				968C04F12D5C97D6003BB0DA /* KanjiMapping.swift in Sources */,
