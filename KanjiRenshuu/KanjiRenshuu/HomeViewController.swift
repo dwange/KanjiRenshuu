@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import SnapKit
 
 class HomeViewController: UIViewController {
     
     //MARK: - GUI Variables
     
-    private lazy var titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Kanji Renshuu"
         label.font = UIFont(name: "Arial Bold", size: 35)
@@ -37,7 +38,7 @@ class HomeViewController: UIViewController {
         
         return button
     }()
-
+    
     private lazy var secondButton: UIButton = {
         let button = UIButton()
         button.setTitle("Match", for: .normal)
@@ -64,21 +65,21 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configureUI()
     }
-
+    
     //MARK: - Private methods
-
+    
     @objc private func goToSelectKanjiViewController() {
         navigationController?.pushViewController(SelectKanjiViewController(), animated: true)
-
-     }
-     
-     @objc private func goToMatchViewController() {
-         navigationController?.pushViewController(MatchViewController(), animated: true)
-
-      }
+        
+    }
+    
+    @objc private func goToMatchViewController() {
+        navigationController?.pushViewController(MatchViewController(), animated: true)
+        
+    }
     
     private func configureUI() {
         view.addSubview(titleLabel)
@@ -86,26 +87,31 @@ class HomeViewController: UIViewController {
         view.addSubview(secondButton)
         
         view.backgroundColor = .white
-
+        
         setupConstraints()
-
+        
     }
     
     private func setupConstraints() {
         
-        firstButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        firstButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        firstButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
-        firstButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 80).isActive = true
+        firstButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.height.equalTo(buttonHeight)
+            make.leading.equalToSuperview().offset(80)
+        }
         
-        titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: firstButton.topAnchor, constant: -80).isActive = true
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(firstButton.snp.top).offset(-80)
+        }
         
-        secondButton.topAnchor.constraint(equalTo: firstButton.bottomAnchor, constant: 40).isActive = true
-        secondButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        secondButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
-        secondButton.widthAnchor.constraint(equalTo: firstButton.widthAnchor).isActive = true
+        secondButton.snp.makeConstraints { make in
+            make.top.equalTo(firstButton.snp.bottom).offset(40)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(buttonHeight)
+            make.width.equalTo(firstButton)
+        }
     }
-
 }
 

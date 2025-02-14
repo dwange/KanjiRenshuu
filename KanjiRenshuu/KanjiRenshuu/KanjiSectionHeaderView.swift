@@ -5,8 +5,8 @@
 //  Created by  Katya Savina on 12.02.2025.
 //
 
-import Foundation
 import UIKit
+import SnapKit
 
 class KanjiSectionHeaderView: UICollectionReusableView {
     
@@ -64,4 +64,5 @@ class KanjiSectionHeaderView: UICollectionReusableView {
     func configure(with title: String) {
         titleLabel.text = title
     }
+
 }

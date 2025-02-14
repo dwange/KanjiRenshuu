@@ -5,8 +5,8 @@
 //  Created by  Katya Savina on 04.02.2025.
 //
 
-import Foundation
 import UIKit
+import SnapKit
 
 class SelectKanjiViewController: UIViewController {
     
@@ -27,9 +27,7 @@ class SelectKanjiViewController: UIViewController {
     
     //MARK: - Properties
     
-    private let kanjiManager = KanjiManager()
-    private var sortedGrades: [Int?] = []
-    private var kanjiByGrade: [Int?: [KanjiObject]] = [:]
+    private let viewModel = SelectKanjiViewModel()
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -37,7 +35,8 @@ class SelectKanjiViewController: UIViewController {
         
         title = "kanji".uppercased()
         setupUI()
-        fetchKanji()
+        bindViewModel()
+        viewModel.fetchKanji()
     }
     
     //MARK: - Private methods
@@ -86,45 +85,29 @@ class SelectKanjiViewController: UIViewController {
         }
     }
     
-    private func fetchKanji() {
-        kanjiManager.fetchAllKanji { [weak self] groupedKanji in
-            guard let self = self else { return }
-            let filteredGroupedKanji = groupedKanji.filter { (key, value) in
-                return key != nil
-            }
-            self.kanjiByGrade = filteredGroupedKanji
-            self.sortedGrades = filteredGroupedKanji.keys.sorted { $0 ?? Int.max < $1 ?? Int.max }
-            
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
-    }
-    
-    private func reloadCollectionView() {
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
+    private func bindViewModel() {
+        viewModel.onDataUpdated = { [weak self] in
+            self?.collectionView.reloadData()
         }
     }
 }
 
-//MARK: - UICollectionViewDelegate
-
+// MARK: - UICollectionViewDelegate
 extension SelectKanjiViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     }
 }
 
-//MARK: - UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 extension SelectKanjiViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sortedGrades.count
+        return viewModel.sortedGrades.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let grade = sortedGrades[section]
-        return kanjiByGrade[grade]?.count ?? 0
+        let grade = viewModel.sortedGrades[section]
+        return viewModel.kanjiByGrade[grade]?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -132,8 +115,8 @@ extension SelectKanjiViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let grade = sortedGrades[indexPath.section]
-        if let kanjiList = kanjiByGrade[grade] {
+        let grade = viewModel.sortedGrades[indexPath.section]
+        if let kanjiList = viewModel.kanjiByGrade[grade] {
             cell.configure(with: kanjiList[indexPath.item])
         }
         
@@ -146,7 +129,7 @@ extension SelectKanjiViewController: UICollectionViewDataSource {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: KanjiSectionHeaderView.reuseIdentifier, for: indexPath) as! KanjiSectionHeaderView
         
-        let grade = sortedGrades[indexPath.section]
+        let grade = viewModel.sortedGrades[indexPath.section]
         let title = grade != nil ? "Grade \(grade!)" : "Ungraded Kanji"
         
         headerView.configure(with: title)
@@ -154,21 +137,20 @@ extension SelectKanjiViewController: UICollectionViewDataSource {
     }
 }
 
-//MARK: - SelectKanjiViewCellDelegate
-
+// MARK: - SelectKanjiViewCellDelegate
 extension SelectKanjiViewController: SelectKanjiViewCellDelegate {
-        
     func didTapKanjiButton(kanji: String) {
         let drawVC = DrawViewController()
-        drawVC.kanji = kanji
+        drawVC.viewModel.kanji = kanji
         
-        // Find the kanji group of the selected kanji
-        for (_, kanjiList) in kanjiByGrade {
+        for (_, kanjiList) in viewModel.kanjiByGrade {
             if kanjiList.contains(where: { $0.kanji == kanji }) {
-                drawVC.kanjiGroup = kanjiList
+                drawVC.viewModel.kanjiGroup = kanjiList
                 break
             }
         }
+        
         navigationController?.pushViewController(drawVC, animated: true)
     }
 }
+

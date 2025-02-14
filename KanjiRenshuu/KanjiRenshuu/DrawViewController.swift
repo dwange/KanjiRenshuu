@@ -123,23 +123,19 @@ class DrawViewController: UIViewController {
     
     //MARK: - Properties
     
-    var kanji: String?
-    private var kanjiDetailManager = KanjiDetailManager()
-    var kanjiGroup: [KanjiObject] = []
-    
+    let viewModel = DrawKanjiViewModel()
     private var isExpanded = false
-    private var fullTranslationText: String = ""
-    private var kanjiMapping = loadKanjiMapping()
     
     //MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
+        setupBindings()
+        viewModel.fetchKanjiData()
+        loadKanjiSVG()
         
-        fetchKanjiData()
-        drawingView.loadKanjiSVG(for: kanji, from: kanjiMapping)
     }
     
     //MARK: - Private methods
@@ -153,8 +149,10 @@ class DrawViewController: UIViewController {
                                        translationStackView,
                                        drawingView,
                                        buttonStackView])
-        translationStackView.addArrangedSubviews([translationLabel, moreButton])
-        buttonStackView.addArrangedSubviews([retryButton, continueButton])
+        translationStackView.addArrangedSubviews([translationLabel,
+                                                  moreButton])
+        buttonStackView.addArrangedSubviews([retryButton,
+                                             continueButton])
         
         setupConstraints()
     }
@@ -199,22 +197,41 @@ class DrawViewController: UIViewController {
         
     }
     
+    private func loadKanjiSVG() {
+        if let kanji = viewModel.getKanjiSVG() {
+            drawingView.loadKanjiSVG(for: kanji, from: loadKanjiMapping())
+        }
+    }
+    
     @objc private func clearDrawing() {
         drawingView.clear()
     }
     
+    private func setupBindings() {
+        viewModel.kanjiUpdated = { [weak self] kanjiObject in
+            guard let self = self else { return }
+            self.updateUI(with: kanjiObject)
+        }
+        
+        viewModel.errorOccurred = { [weak self] in
+            guard let self = self else { return }
+            self.showError()
+        }
+    }
+    
     @objc private func toggleTranslation() {
-        if fullTranslationText.split(separator: ", ").count > 1 {
+        let translations = viewModel.fullTranslationText.split(separator: ", ").dropFirst().map { String($0) }
+        
+        if translations.count > 1 {
             let popupView = TranslationsPopUpView()
-            popupView.translations = fullTranslationText.split(separator: ", ").dropFirst().map { String($0) }
+            popupView.translations = translations
             
             view.addSubview(popupView)
             popupView.translatesAutoresizingMaskIntoConstraints = false
             
             popupView.snp.makeConstraints { make in
                 make.top.equalTo(moreButton.snp.bottom).offset(10)
-                make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
-                make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+                make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(10)
                 make.height.equalTo(200)
             }
             
@@ -224,49 +241,23 @@ class DrawViewController: UIViewController {
     }
     
     @objc private func dismissPopup() {
-        if let popupView = view.subviews.first(where: { $0 is TranslationsPopUpView }) {
-            popupView.removeFromSuperview()
-        }
+        view.subviews.first { $0 is TranslationsPopUpView }?.removeFromSuperview()
     }
     
     @objc private func showNextKanji() {
-        guard !kanjiGroup.isEmpty else { return }
-            
-            let randomKanji = kanjiGroup.randomElement()
-            kanji = randomKanji?.kanji
-            fetchKanjiData()
-            drawingView.loadKanjiSVG(for: kanji, from: kanjiMapping)
+        viewModel.getNextKanji()
     }
     
-    func fetchKanjiData() {
-        guard let kanji = kanji else { return }
-        
-        kanjiDetailManager.fetchKanjiDetails(kanji: kanji) { [weak self] kanjiObject in
-            guard let self = self else { return }
-            if let kanjiObject = kanjiObject {
-                self.updateUI(with: kanjiObject)
-            } else {
-                self.showError()
-            }
-        }
-    }
-    
-    func updateUI(with kanjiObject: KanjiObject) {
+    private func updateUI(with kanjiObject: KanjiObject) {
         kanjiLabel.text = kanjiObject.kanji
         readingsLabel.text = "\(kanjiObject.on_readings.joined(separator: ", ")), \(kanjiObject.kun_readings.joined(separator: ", "))"
-        fullTranslationText = kanjiObject.meanings.joined(separator: ", ")
+        translationLabel.text = kanjiObject.meanings.first ?? "No translation available"
+        moreButton.isHidden = kanjiObject.meanings.count <= 1
         
-        if kanjiObject.meanings.isEmpty {
-            translationLabel.text = "No translation available"
-            translationLabel.textColor = .gray
-            moreButton.isHidden = true
-        } else {
-            translationLabel.text = kanjiObject.meanings.first
-            moreButton.isHidden = kanjiObject.meanings.count <= 1
-        }
+        loadKanjiSVG()
     }
     
-    func showError() {
+    private func showError() {
         kanjiLabel.text = "Error"
         translationLabel.text = "Unable to fetch data"
     }

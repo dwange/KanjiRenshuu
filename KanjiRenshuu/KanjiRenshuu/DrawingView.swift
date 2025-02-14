@@ -16,7 +16,7 @@ class DrawingView: UIView {
     private var strokes: [[CGPoint]] = [[]]
     private var svgView: SVGKImageView?
     
-    // MARK: - Initializers
+    // MARK: - Initializations
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -73,7 +73,7 @@ class DrawingView: UIView {
         clear()
     }
     
-    // MARK: - Methods
+    // MARK: - Drawing methods
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
@@ -106,12 +106,14 @@ class DrawingView: UIView {
         context.strokePath()
     }
     
+    // MARK: - Methods
+    
     func clear() {
         strokes = [[]]
         setNeedsDisplay()
     }
     
-    // MARK: - Helper Methods
+    // MARK: - Helper methods
     
     private func findSvgFileName(for kanji: String, in mapping: [String: [String]]) -> String? {
         return mapping[kanji]?.first
