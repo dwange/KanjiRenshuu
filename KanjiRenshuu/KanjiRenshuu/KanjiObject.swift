@@ -7,16 +7,41 @@
 
 import Foundation
 
-struct KanjiObject: Codable, Identifiable {
-    
-    var id: String { kanji }
-    let kanji: String
+import Foundation
+
+struct KanjiObject: Decodable {
+    let kanji: KanjiDetails
     let grade: Int?
-    let stroke_count: Int?
-    let meanings: [String]
-    let kun_readings: [String]
-    let on_readings: [String]
-    let name_readings: [String]
-    let jlpt: Int?
-    let unicode: String
 }
+
+struct KanjiDetails: Decodable {
+    let character: String
+    let meaning: KanjiMeaning
+    let strokes: KanjiStrokes
+    let onyomi: Reading
+    let kunyomi: Reading
+    let video: KanjiVideo
+}
+
+struct KanjiMeaning: Decodable {
+    let english: String
+}
+
+struct KanjiStrokes: Decodable {
+    let count: Int
+    let timings: [Double]?
+    let images: [String]?
+}
+
+struct Reading: Decodable {
+    let romaji: String
+    let katakana: String?
+    let hiragana: String?
+}
+
+struct KanjiVideo: Decodable {
+    let poster: String?
+    let mp4: String?
+    let webm: String?
+}
+

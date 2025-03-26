@@ -29,7 +29,7 @@ class DrawKanjiViewModel {
         kanjiDetailManager.fetchKanjiDetails(kanji: kanji) { [weak self] kanjiObject in
             guard let self = self else { return }
             if let kanjiObject = kanjiObject {
-                self.fullTranslationText = kanjiObject.meanings.joined(separator: ", ")
+                self.fullTranslationText = kanjiObject.kanji.meaning.english
                 self.kanjiUpdated?(kanjiObject)
             } else {
                 self.errorOccurred?()
@@ -40,7 +40,7 @@ class DrawKanjiViewModel {
     func getNextKanji() {
         guard !kanjiGroup.isEmpty else { return }
         let randomKanji = kanjiGroup.randomElement()
-        kanji = randomKanji?.kanji
+        kanji = randomKanji?.kanji.character
         fetchKanjiData()
     }
     

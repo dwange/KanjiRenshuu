@@ -30,7 +30,20 @@ class DrawViewController: UIViewController {
         return label
     }()
     
-    private let readingsLabel: UILabel = {
+    private let onReadingsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = .boldSystemFont(ofSize: 15)
+        label.textColor = .systemGray
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        
+        return label
+    }()
+    
+    private let kunReadingsLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = .boldSystemFont(ofSize: 15)
@@ -145,7 +158,8 @@ class DrawViewController: UIViewController {
         view.addSubview(stackView)
         
         stackView.addArrangedSubviews([kanjiLabel,
-                                       readingsLabel,
+                                       onReadingsLabel,
+                                       kunReadingsLabel,
                                        translationStackView,
                                        drawingView,
                                        buttonStackView])
@@ -167,7 +181,11 @@ class DrawViewController: UIViewController {
             make.height.equalTo(stackView.snp.height).multipliedBy(0.25)
         }
         
-        readingsLabel.snp.makeConstraints { make in
+        onReadingsLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        kunReadingsLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
         }
         
@@ -249,10 +267,11 @@ class DrawViewController: UIViewController {
     }
     
     private func updateUI(with kanjiObject: KanjiObject) {
-        kanjiLabel.text = kanjiObject.kanji
-        readingsLabel.text = "\(kanjiObject.on_readings.joined(separator: ", ")), \(kanjiObject.kun_readings.joined(separator: ", "))"
-        translationLabel.text = kanjiObject.meanings.first ?? "No translation available"
-        moreButton.isHidden = kanjiObject.meanings.count <= 1
+        kanjiLabel.text = kanjiObject.kanji.character
+        onReadingsLabel.text = "\(kanjiObject.kanji.onyomi.romaji)"
+        kunReadingsLabel.text = "\(kanjiObject.kanji.kunyomi.romaji)"
+        translationLabel.text = kanjiObject.kanji.meaning.english
+        moreButton.isHidden = kanjiObject.kanji.meaning.english.count <= 1
         
         loadKanjiSVG()
     }

@@ -7,65 +7,66 @@
 
 import Foundation
 
-class KanjiManager {
+protocol KanjiAPIProtocol {}
+
+class KanjiManager: KanjiAPIProtocol {
     
     var kanjiData = [KanjiObject]()
-    let allKanjiURL = "https://kanjiapi.dev/v1/kanji/all"
+    let allKanjiURL = "https://kanjialive-api.p.rapidapi.com/api/public/kanji/all"
     
-    internal func fetchAllKanji(completion: @escaping ([Int?: [KanjiObject]]) -> Void) {
-        if let url = URL(string: allKanjiURL) {
-            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if error != nil {
-                    print("Did fail with error: \(error!)")
-                    return
-                }
-                if let safeData = data {
-                    do {
-                        let kanjiList = try JSONDecoder().decode([String].self, from: safeData)
-                        self.fetchKanjiDetails(for: kanjiList, completion: completion)
-                    } catch {
-                        print("Error decoding JSON: \(error)")
-                    }
-                }
+    func fetchAllKanji(completion: @escaping ([Int?: [KanjiObject]]) -> Void) {
+        fetchKanjiData(from: allKanjiURL) { (kanjiList: [KanjiObject]?) in
+            guard let kanjiList else {
+                completion([:])
+                return
             }
-            task.resume()
-        }
-    }
-    
-    private func fetchKanjiDetails(for kanjiList: [String], completion: @escaping ([Int?: [KanjiObject]]) -> Void) {
-        let group = DispatchGroup()
-        var detailedKanjiList = [KanjiObject]()
-        
-        for kanji in kanjiList {
-            group.enter()
-            let urlString = "https://kanjiapi.dev/v1/kanji/\(kanji)"
-            if let url = URL(string: urlString) {
-                let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                    defer { group.leave() }
-                    if error != nil {
-                        print("Did fail with error: \(error!)")
-                        return
-                    }
-                    if let safeData = data {
-                        let decoder = JSONDecoder()
-                        do {
-                            let kanjiObject = try decoder.decode(KanjiObject.self, from: safeData)
-                            DispatchQueue.main.async {
-                                detailedKanjiList.append(kanjiObject)
-                            }
-                        } catch {
-                            print("Error decoding JSON: \(error)")
-                        }
-                    }
-                }
-                task.resume()
-            }
-        }
-        
-        group.notify(queue: .main) {
-            let groupedKanji = Dictionary(grouping: detailedKanjiList, by: { $0.grade })
+
+            let groupedKanji = Dictionary(grouping: kanjiList, by: {$0.grade })
             completion(groupedKanji)
         }
     }
 }
 
+//MARK: - KanjiAPI Protocol extension
+
+extension KanjiAPIProtocol {
+    
+    func fetchKanjiData<T: Decodable>(from urlString: String, completion: @escaping (T?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 10.0
+        request.allHTTPHeaderFields = [
+            "x-rapidapi-key": "a87b94926dmshc6de706fbe6f731p10a78ajsnbadc85bc3bc0",
+            "x-rapidapi-host": "kanjialive-api.p.rapidapi.com"
+        ]
+        
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                print("Did fail with error: \(error!)")
+                completion(nil)
+                return
+            }
+
+            guard let safeData = data else {
+                completion(nil)
+                return
+            }
+            let decoder = JSONDecoder()
+            do {
+                let decodedData = try decoder.decode(T.self, from: safeData)
+                DispatchQueue.main.async {
+                    completion(decodedData)
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+                completion(nil)
+            }
+        }
+        task.resume()
+    }
+}

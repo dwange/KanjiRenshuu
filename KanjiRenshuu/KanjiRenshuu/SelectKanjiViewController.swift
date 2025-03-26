@@ -144,7 +144,7 @@ extension SelectKanjiViewController: SelectKanjiViewCellDelegate {
         drawVC.viewModel.kanji = kanji
         
         for (_, kanjiList) in viewModel.kanjiByGrade {
-            if kanjiList.contains(where: { $0.kanji == kanji }) {
+            if kanjiList.contains(where: { $0.kanji.character == kanji }) {
                 drawVC.viewModel.kanjiGroup = kanjiList
                 break
             }

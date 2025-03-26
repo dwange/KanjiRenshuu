@@ -70,7 +70,7 @@ final class SelectKanjiViewCell: UICollectionViewCell {
     //MARK: - Methods
     
     func configure(with kanjiObject: KanjiObject) {
-        kanji = kanjiObject.kanji
+        kanji = kanjiObject.kanji.character
         kanjiButton.setTitle(kanji, for: .normal)
     }
 }
