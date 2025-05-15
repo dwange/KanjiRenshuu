@@ -142,15 +142,27 @@ extension SelectKanjiViewController: SelectKanjiViewCellDelegate {
     func didTapKanjiButton(kanji: String) {
         let drawVC = DrawViewController()
         drawVC.viewModel.kanji = kanji
-        
+
         for (_, kanjiList) in viewModel.kanjiByGrade {
-            if kanjiList.contains(where: { $0.kanji.character == kanji }) {
+            if let matchedKanji = kanjiList.first(where: { $0.kanji.character == kanji }) {
                 drawVC.viewModel.kanjiGroup = kanjiList
+
+                if let posterString = matchedKanji.kanji.video.poster,
+                   let posterURL = URL(string: posterString) {
+                    drawVC.posterURL = posterURL
+                }
+
+                if let videoString = matchedKanji.kanji.video.mp4,
+                   let videoURL = URL(string: videoString) {
+                    drawVC.videoURL = videoURL
+                }
+
                 break
             }
         }
-        
+
         navigationController?.pushViewController(drawVC, animated: true)
     }
 }
+
 

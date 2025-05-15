@@ -35,7 +35,7 @@ class KanjiManager: KanjiAPIProtocol {
             
             // Extract only kanji characters and their English meanings
             let kanjiPairs = kanjiList.compactMap { kanjiObject in
-                (kanjiObject.kanji.character, kanjiObject.kanji.meaning.english)
+                (kanjiObject.kanji.character, kanjiObject.kanji.meaning.english.components(separatedBy: ",").first!)
             }
             
             // Shuffle and pick a limited number of pairs

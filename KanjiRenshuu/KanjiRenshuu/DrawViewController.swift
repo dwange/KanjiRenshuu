@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import SVGKit
 
 class DrawViewController: UIViewController {
     
@@ -22,17 +23,28 @@ class DrawViewController: UIViewController {
         return stackView
     }()
     
-    private let kanjiLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = .boldSystemFont(ofSize: 100)
-        
-        return label
+    private let kanjiInfoStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 16
+        stackView.alignment = .center
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private let readingsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        return stackView
     }()
     
     private let onReadingsLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = .boldSystemFont(ofSize: 15)
         label.textColor = .systemGray
         label.adjustsFontSizeToFitWidth = true
@@ -45,7 +57,7 @@ class DrawViewController: UIViewController {
     
     private let kunReadingsLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = .boldSystemFont(ofSize: 15)
         label.textColor = .systemGray
         label.adjustsFontSizeToFitWidth = true
@@ -56,15 +68,6 @@ class DrawViewController: UIViewController {
         return label
     }()
     
-    private let translationStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 4
-        stackView.alignment = .center
-        
-        return stackView
-    }()
-    
     private let translationLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -73,13 +76,14 @@ class DrawViewController: UIViewController {
         return label
     }()
     
-    private let moreButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("...", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        button.addTarget(self, action: #selector(toggleTranslation), for: .touchUpInside)
-        return button
+    private let strokesStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private let drawingView: DrawingView = {
@@ -139,6 +143,12 @@ class DrawViewController: UIViewController {
     let viewModel = DrawKanjiViewModel()
     private var isExpanded = false
     
+    var posterURL: URL?
+    var videoURL: URL?
+    
+    private let kanjiVideoPlayerView = KanjiVideoPlayerView()
+    
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -148,6 +158,7 @@ class DrawViewController: UIViewController {
         setupBindings()
         viewModel.fetchKanjiData()
         loadKanjiSVG()
+        loadVideoPlayer()
         
     }
     
@@ -157,14 +168,14 @@ class DrawViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(stackView)
         
-        stackView.addArrangedSubviews([kanjiLabel,
-                                       onReadingsLabel,
-                                       kunReadingsLabel,
-                                       translationStackView,
+        kanjiInfoStackView.addArrangedSubviews([kanjiVideoPlayerView, readingsStackView])
+        readingsStackView.addArrangedSubviews([onReadingsLabel, kunReadingsLabel])
+        
+        stackView.addArrangedSubviews([kanjiInfoStackView,
+                                       translationLabel,
+                                       strokesStackView,
                                        drawingView,
                                        buttonStackView])
-        translationStackView.addArrangedSubviews([translationLabel,
-                                                  moreButton])
         buttonStackView.addArrangedSubviews([retryButton,
                                              continueButton])
         
@@ -177,33 +188,27 @@ class DrawViewController: UIViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        kanjiLabel.snp.makeConstraints { make in
-            make.height.equalTo(stackView.snp.height).multipliedBy(0.25)
+        kanjiInfoStackView.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(view.safeAreaLayoutGuide).multipliedBy(0.25)
         }
         
-        onReadingsLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-        }
-        
-        kunReadingsLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-        }
-        
-        translationStackView.snp.makeConstraints { make in
-            make.width.equalToSuperview().multipliedBy(0.8)
-        }
+        kanjiVideoPlayerView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        readingsStackView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         translationLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.lessThanOrEqualTo(moreButton.snp.leading).offset(-4).priority(.low)
+            make.top.equalTo(kanjiInfoStackView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
         }
         
-        moreButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview()
+        strokesStackView.snp.makeConstraints { make in
+            make.top.equalTo(translationLabel.snp.bottom)
+            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(80)
         }
         
         drawingView.snp.makeConstraints { make in
-            make.top.equalTo(translationLabel.snp.bottom).offset(20)
+            make.top.equalTo(strokesStackView.snp.bottom).offset(20)
             make.width.equalToSuperview().multipliedBy(0.9)
             make.height.equalTo(view.safeAreaLayoutGuide.snp.height).multipliedBy(0.5)
         }
@@ -227,39 +232,19 @@ class DrawViewController: UIViewController {
     
     private func setupBindings() {
         viewModel.kanjiUpdated = { [weak self] kanjiObject in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateUI(with: kanjiObject)
         }
         
         viewModel.errorOccurred = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.showError()
         }
     }
     
-    @objc private func toggleTranslation() {
-        let translations = viewModel.fullTranslationText.split(separator: ", ").dropFirst().map { String($0) }
-        
-        if translations.count > 1 {
-            let popupView = TranslationsPopUpView()
-            popupView.translations = translations
-            
-            view.addSubview(popupView)
-            popupView.translatesAutoresizingMaskIntoConstraints = false
-            
-            popupView.snp.makeConstraints { make in
-                make.top.equalTo(moreButton.snp.bottom).offset(10)
-                make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(10)
-                make.height.equalTo(200)
-            }
-            
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissPopup))
-            view.addGestureRecognizer(tapGesture)
-        }
-    }
-    
-    @objc private func dismissPopup() {
-        view.subviews.first { $0 is TranslationsPopUpView }?.removeFromSuperview()
+    private func loadVideoPlayer() {
+        kanjiVideoPlayerView.posterURL = posterURL
+        kanjiVideoPlayerView.videoURL = videoURL
     }
     
     @objc private func showNextKanji() {
@@ -267,17 +252,21 @@ class DrawViewController: UIViewController {
     }
     
     private func updateUI(with kanjiObject: KanjiObject) {
-        kanjiLabel.text = kanjiObject.kanji.character
-        onReadingsLabel.text = "\(kanjiObject.kanji.onyomi.romaji)"
-        kunReadingsLabel.text = "\(kanjiObject.kanji.kunyomi.romaji)"
         translationLabel.text = kanjiObject.kanji.meaning.english
-        moreButton.isHidden = kanjiObject.kanji.meaning.english.count <= 1
+        onReadingsLabel.text = "Onyomi: \(kanjiObject.kanji.onyomi.katakana ?? kanjiObject.kanji.onyomi.romaji)"
+        kunReadingsLabel.text = "Kunyomi: \(kanjiObject.kanji.kunyomi.hiragana ?? kanjiObject.kanji.kunyomi.romaji)"
+        self.updateKanjiVideoPlayer(with: kanjiObject)
         
         loadKanjiSVG()
     }
     
     private func showError() {
-        kanjiLabel.text = "Error"
         translationLabel.text = "Unable to fetch data"
+    }
+    
+    private func updateKanjiVideoPlayer(with kanjiObject: KanjiObject) {
+        self.kanjiVideoPlayerView.posterURL = URL(string: kanjiObject.kanji.video.poster!)
+        self.kanjiVideoPlayerView.videoURL = URL(string: kanjiObject.kanji.video.mp4!)
+        self.kanjiVideoPlayerView.resetPlayerState()
     }
 }

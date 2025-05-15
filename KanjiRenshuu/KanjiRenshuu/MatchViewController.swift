@@ -22,7 +22,7 @@ class MatchViewController: UIViewController {
         view.spacing = 10
         return view
     }()
-   
+    
     private let rightStack: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
@@ -31,7 +31,7 @@ class MatchViewController: UIViewController {
         view.spacing = 10
         return view
     }()
-        
+    
     private var leftButtons: [UIButton] = []
     private var rightButtons: [UIButton] = []
     
@@ -39,18 +39,18 @@ class MatchViewController: UIViewController {
     private var kanjiPairs: [(kanji: String, translation: String)] = []
     private var selectedKanji: UIButton?
     private var selectedTranslation: UIButton?
-
     
-
+    
+    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         let kanjiManager = KanjiManager()
-          kanjiManager.fetchRandomKanjiPairs(count: 5) { [weak self] pairs in
-              guard let self, let pairs else { return }
-              self.kanjiPairs = pairs
-              self.configureUI()
-          }
+        kanjiManager.fetchRandomKanjiPairs(count: 5) { [weak self] pairs in
+            guard let self, let pairs else { return }
+            self.kanjiPairs = pairs
+            self.configureUI()
+        }
     }
     
     //MARK: - Private methods
@@ -59,52 +59,51 @@ class MatchViewController: UIViewController {
         
         view.addSubview(containerView)
         containerView.addSubViews([leftStack, rightStack])
-      
-
+        
         createButtonsForStacks()
         
         setupConstraints()
     }
-        func setupConstraints() {
-            
-            containerView.snp.makeConstraints { make in
-                make.center.equalToSuperview()
-                make.height.equalTo(300)
-                make.width.equalToSuperview().multipliedBy(0.8)
-            }
-            
-            leftStack.snp.makeConstraints { make in
-                make.leading.equalToSuperview()
-                make.top.bottom.equalToSuperview()
-                make.width.equalToSuperview().multipliedBy(0.4)
-            }
-            
-            rightStack.snp.makeConstraints { make in
-                make.trailing.equalToSuperview()
-                make.top.bottom.equalToSuperview()
-                make.width.equalToSuperview().multipliedBy(0.4)
-            }
-            
-            for button in leftButtons + rightButtons {
-                        button.snp.makeConstraints { make in
-                            make.height.equalTo(50)
-                        }
-                    }
+    func setupConstraints() {
+        
+        containerView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.height.equalTo(300)
+            make.width.equalToSuperview().multipliedBy(0.8)
         }
+        
+        leftStack.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.4)
+        }
+        
+        rightStack.snp.makeConstraints { make in
+            make.trailing.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.4)
+        }
+        
+        for button in leftButtons + rightButtons {
+            button.snp.makeConstraints { make in
+                make.height.equalTo(50)
+            }
+        }
+    }
     private func createButtonsForStacks() {
         let shuffledTranslations = kanjiPairs.map { $0.translation }.shuffled()
-
+        
         for i in 0..<kanjiPairs.count {
-               let leftButton = createButton(title: kanjiPairs[i].kanji)
-               let rightButton = createButton(title: shuffledTranslations[i])
-
-               leftButtons.append(leftButton)
-               rightButtons.append(rightButton)
-
-               leftStack.addArrangedSubview(leftButton)
-               rightStack.addArrangedSubview(rightButton)
-           }
+            let leftButton = createButton(title: kanjiPairs[i].kanji)
+            let rightButton = createButton(title: shuffledTranslations[i])
+            
+            leftButtons.append(leftButton)
+            rightButtons.append(rightButton)
+            
+            leftStack.addArrangedSubview(leftButton)
+            rightStack.addArrangedSubview(rightButton)
         }
+    }
     
     private func createButton(title: String) -> UIButton {
         let button = UIButton(type: .system)
@@ -115,6 +114,7 @@ class MatchViewController: UIViewController {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
+        
         
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         return button

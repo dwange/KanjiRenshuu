@@ -1,0 +1,11 @@
+platform :ios, '17.2'
+
+target 'KanjiRenshuu' do
+  use_frameworks!
+
+    pod 'SnapKit', '~> 5.7.0'
+    pod 'SVGKit', :git => 'https://github.com/SVGKit/SVGKit.git', :branch => '3.x'
+
+
+
+end

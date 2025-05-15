@@ -10,6 +10,7 @@ import Foundation
 struct KanjiObject: Decodable {
     let kanji: KanjiDetails
     let grade: Int?
+    let examples: [KanjiExamples]
 }
 
 struct KanjiDetails: Decodable {
@@ -28,7 +29,7 @@ struct KanjiMeaning: Decodable {
 struct KanjiStrokes: Decodable {
     let count: Int
     let timings: [Double]?
-    let images: [String]?
+    let images: [String]
 }
 
 struct Reading: Decodable {
@@ -43,3 +44,16 @@ struct KanjiVideo: Decodable {
     let webm: String?
 }
 
+struct KanjiExamples: Decodable {
+    let japanese: String
+    let meaning: ExampleMeaning
+    let audio: ExampleAudio
+}
+
+struct ExampleMeaning: Decodable {
+    let english: String
+}
+
+struct ExampleAudio: Decodable {
+    let mp3: String
+}
