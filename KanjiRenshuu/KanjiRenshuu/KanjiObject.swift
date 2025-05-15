@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 struct KanjiObject: Decodable {
     let kanji: KanjiDetails
     let grade: Int?

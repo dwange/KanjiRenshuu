@@ -25,6 +25,24 @@ class KanjiManager: KanjiAPIProtocol {
             completion(groupedKanji)
         }
     }
+    
+    func fetchRandomKanjiPairs(count: Int, completion: @escaping ([(kanji: String, translation: String)]?) -> Void) {
+        fetchKanjiData(from: allKanjiURL) { (kanjiList: [KanjiObject]?) in
+            guard let kanjiList else {
+                completion(nil)
+                return
+            }
+            
+            // Extract only kanji characters and their English meanings
+            let kanjiPairs = kanjiList.compactMap { kanjiObject in
+                (kanjiObject.kanji.character, kanjiObject.kanji.meaning.english)
+            }
+            
+            // Shuffle and pick a limited number of pairs
+            let selectedPairs = kanjiPairs.shuffled().prefix(count)
+            completion(Array(selectedPairs))
+        }
+    }
 }
 
 //MARK: - KanjiAPI Protocol extension
