@@ -29,6 +29,8 @@ class SelectKanjiViewController: UIViewController {
     
     private let viewModel = SelectKanjiViewModel()
     
+    private var kanjiLoadingView: KanjiLoadingView!
+
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +38,7 @@ class SelectKanjiViewController: UIViewController {
         title = "kanji".uppercased()
         setupUI()
         bindViewModel()
+        showKanjiLoadingAnimation()
         viewModel.fetchKanji()
     }
     
@@ -85,9 +88,23 @@ class SelectKanjiViewController: UIViewController {
         }
     }
     
+    private func showKanjiLoadingAnimation() {
+        let kanjiLoadingView = KanjiLoadingView()
+        self.kanjiLoadingView = kanjiLoadingView
+        view.addSubview(kanjiLoadingView)
+        kanjiLoadingView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(150)
+        }
+    }
+    
     private func bindViewModel() {
         viewModel.onDataUpdated = { [weak self] in
-            self?.collectionView.reloadData()
+            DispatchQueue.main.async {
+                self?.kanjiLoadingView.stop()
+                self?.kanjiLoadingView.removeFromSuperview()
+                self?.collectionView.reloadData()
+            }
         }
     }
 }

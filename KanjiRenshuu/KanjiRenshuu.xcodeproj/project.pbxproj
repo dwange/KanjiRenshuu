@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,9 @@
 		969B39CD2D52961A008CE2DC /* SelectKanjiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969B39CC2D52961A008CE2DC /* SelectKanjiViewController.swift */; };
 		969B4A3C2D5B4F6C005FEE64 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969B4A3B2D5B4F6B005FEE64 /* DrawingView.swift */; };
 		96AA96A72DD612EF00E7E06B /* KanjiVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA96A62DD612EF00E7E06B /* KanjiVideoPlayerView.swift */; };
+		96AA96A92DD7574400E7E06B /* KanjiLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA96A82DD7573F00E7E06B /* KanjiLoadingView.swift */; };
+		96AA97032DD77EF200E7E06B /* MatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA97022DD77EF200E7E06B /* MatchViewModel.swift */; };
+		96AA97052DD77F9B00E7E06B /* MatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA97042DD77F9B00E7E06B /* MatchView.swift */; };
 		96CD6F812D41084E0005F72E /* DrawViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD6F802D41084E0005F72E /* DrawViewController.swift */; };
 		96CD6F832D4108660005F72E /* MatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD6F822D4108660005F72E /* MatchViewController.swift */; };
 /* End PBXBuildFile section */
@@ -55,10 +58,17 @@
 		969B39CC2D52961A008CE2DC /* SelectKanjiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectKanjiViewController.swift; sourceTree = "<group>"; };
 		969B4A3B2D5B4F6B005FEE64 /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
 		96AA96A62DD612EF00E7E06B /* KanjiVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiVideoPlayerView.swift; sourceTree = "<group>"; };
+		96AA96A82DD7573F00E7E06B /* KanjiLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiLoadingView.swift; sourceTree = "<group>"; };
+		96AA97022DD77EF200E7E06B /* MatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchViewModel.swift; sourceTree = "<group>"; };
+		96AA97042DD77F9B00E7E06B /* MatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchView.swift; sourceTree = "<group>"; };
 		96CD6F802D41084E0005F72E /* DrawViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawViewController.swift; sourceTree = "<group>"; };
 		96CD6F822D4108660005F72E /* MatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchViewController.swift; sourceTree = "<group>"; };
 		C9D7A76E101D959F7A3587EB /* Pods-KanjiRenshuu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiRenshuu.release.xcconfig"; path = "Target Support Files/Pods-KanjiRenshuu/Pods-KanjiRenshuu.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		96AA96F32DD777A400E7E06B /* LoadingKanji */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LoadingKanji; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		960C74FA2D3FBA8A00658569 /* Frameworks */ = {
@@ -94,6 +104,7 @@
 			children = (
 				960C74FF2D3FBA8A00658569 /* KanjiRenshuu */,
 				968C04F42D5C9B68003BB0DA /* KanjiSVG */,
+				96AA96F32DD777A400E7E06B /* LoadingKanji */,
 				968C04F22D5C995B003BB0DA /* Index->Kanji.json */,
 				960C75092D3FBA8F00658569 /* Assets.xcassets */,
 				960C750E2D3FBA8F00658569 /* Info.plist */,
@@ -167,6 +178,7 @@
 				968C04F02D5C97D6003BB0DA /* KanjiMapping.swift */,
 				969951332D5F3AFD001A3522 /* SelectKanjiViewModel.swift */,
 				969951372D5F418E001A3522 /* DrawKanjiViewModel.swift */,
+				96AA97022DD77EF200E7E06B /* MatchViewModel.swift */,
 			);
 			name = ViewModel;
 			sourceTree = "<group>";
@@ -183,6 +195,7 @@
 		96D5B0552D54C10F0019321D /* SelectKanji */ = {
 			isa = PBXGroup;
 			children = (
+				96AA96A82DD7573F00E7E06B /* KanjiLoadingView.swift */,
 				969B39CC2D52961A008CE2DC /* SelectKanjiViewController.swift */,
 				963DB8F32D5366CC0045A809 /* SelectKanjiViewCell.swift */,
 				969951272D5D0F4C001A3522 /* KanjiSectionHeaderView.swift */,
@@ -203,6 +216,7 @@
 		96D5B0572D54C13A0019321D /* MatchKanji */ = {
 			isa = PBXGroup;
 			children = (
+				96AA97042DD77F9B00E7E06B /* MatchView.swift */,
 				96CD6F822D4108660005F72E /* MatchViewController.swift */,
 			);
 			name = MatchKanji;
@@ -224,6 +238,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				96AA96F32DD777A400E7E06B /* LoadingKanji */,
 			);
 			name = KanjiRenshuu;
 			productName = KanjiRenshuu;
@@ -334,13 +351,16 @@
 				969B39C22D515EE7008CE2DC /* UIStackView extentions.swift in Sources */,
 				969B39CD2D52961A008CE2DC /* SelectKanjiViewController.swift in Sources */,
 				969B4A3C2D5B4F6C005FEE64 /* DrawingView.swift in Sources */,
+				96AA97052DD77F9B00E7E06B /* MatchView.swift in Sources */,
 				969B39C72D527CFE008CE2DC /* KanjiDetailsManager.swift in Sources */,
 				969B39C02D5158DC008CE2DC /* UIView extensions.swift in Sources */,
 				963DB8F42D5366CC0045A809 /* SelectKanjiViewCell.swift in Sources */,
 				96CD6F812D41084E0005F72E /* DrawViewController.swift in Sources */,
 				960C75052D3FBA8A00658569 /* HomeViewController.swift in Sources */,
 				96AA96A72DD612EF00E7E06B /* KanjiVideoPlayerView.swift in Sources */,
+				96AA96A92DD7574400E7E06B /* KanjiLoadingView.swift in Sources */,
 				960C75012D3FBA8A00658569 /* AppDelegate.swift in Sources */,
+				96AA97032DD77EF200E7E06B /* MatchViewModel.swift in Sources */,
 				969B39CA2D527D5C008CE2DC /* KanjiManager.swift in Sources */,
 				968C04F12D5C97D6003BB0DA /* KanjiMapping.swift in Sources */,
 				969951342D5F3AFD001A3522 /* SelectKanjiViewModel.swift in Sources */,
