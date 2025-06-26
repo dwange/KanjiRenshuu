@@ -170,4 +170,8 @@ xcuserdata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+# Secrets
+KanjiRenshuuConfig.plist
+
+
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swiftpm,swiftpackagemanager,swift,cocoapods,macos,carthage,git
