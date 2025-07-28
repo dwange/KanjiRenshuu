@@ -30,7 +30,7 @@
 		96AA97D22E0C115B00E7E06B /* KanjiObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA979B2E0C115B00E7E06B /* KanjiObject.swift */; };
 		96AA97D32E0C115B00E7E06B /* MatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA97B22E0C115B00E7E06B /* MatchViewModel.swift */; };
 		96AA97D42E0C115B00E7E06B /* UIStackView extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA97A32E0C115B00E7E06B /* UIStackView extentions.swift */; };
-		96AA97DB2E0D3EA900E7E06B /* KanjiRenshuuConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 96AA97DA2E0D3EA900E7E06B /* KanjiRenshuuConfig.plist */; };
+		96AA97EC2E0D757F00E7E06B /* KanjiRenshuuConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 96AA97EB2E0D757F00E7E06B /* KanjiRenshuuConfig.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,14 +59,15 @@
 		96AA97BA2E0C115B00E7E06B /* MatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchView.swift; sourceTree = "<group>"; };
 		96AA97BC2E0C115B00E7E06B /* KanjiLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiLoadingView.swift; sourceTree = "<group>"; };
 		96AA97BD2E0C115B00E7E06B /* KanjiSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiSectionHeaderView.swift; sourceTree = "<group>"; };
-		96AA97DA2E0D3EA900E7E06B /* KanjiRenshuuConfig.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = KanjiRenshuuConfig.plist; sourceTree = "<group>"; };
 		96AA97E92E0D47DF00E7E06B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		96AA97EB2E0D757F00E7E06B /* KanjiRenshuuConfig.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = KanjiRenshuuConfig.plist; sourceTree = "<group>"; };
 		C9D7A76E101D959F7A3587EB /* Pods-KanjiRenshuu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiRenshuu.release.xcconfig"; path = "Target Support Files/Pods-KanjiRenshuu/Pods-KanjiRenshuu.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		96AA96F32DD777A400E7E06B /* LoadingKanji */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LoadingKanji; sourceTree = "<group>"; };
 		96AA97E42E0D43BC00E7E06B /* API Managers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "API Managers"; sourceTree = "<group>"; };
+		96AA98142E37C1E900E7E06B /* DemoAssets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DemoAssets; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,12 +102,13 @@
 		960C74F42D3FBA8A00658569 = {
 			isa = PBXGroup;
 			children = (
+				96AA98142E37C1E900E7E06B /* DemoAssets */,
 				960C74FF2D3FBA8A00658569 /* KanjiRenshuu */,
 				968C04F42D5C9B68003BB0DA /* KanjiSVG */,
 				96AA96F32DD777A400E7E06B /* LoadingKanji */,
 				968C04F22D5C995B003BB0DA /* Index->Kanji.json */,
 				960C75092D3FBA8F00658569 /* Assets.xcassets */,
-				96AA97DA2E0D3EA900E7E06B /* KanjiRenshuuConfig.plist */,
+				96AA97EB2E0D757F00E7E06B /* KanjiRenshuuConfig.plist */,
 				96AA97E92E0D47DF00E7E06B /* Info.plist */,
 				960C74FE2D3FBA8A00658569 /* Products */,
 				902115D1A1D57E0612C1667D /* Pods */,
@@ -297,6 +299,7 @@
 			fileSystemSynchronizedGroups = (
 				96AA96F32DD777A400E7E06B /* LoadingKanji */,
 				96AA97E42E0D43BC00E7E06B /* API Managers */,
+				96AA98142E37C1E900E7E06B /* DemoAssets */,
 			);
 			name = KanjiRenshuu;
 			productName = KanjiRenshuu;
@@ -343,7 +346,7 @@
 			files = (
 				968C04F52D5C9B68003BB0DA /* KanjiSVG in Resources */,
 				960C750A2D3FBA8F00658569 /* Assets.xcassets in Resources */,
-				96AA97DB2E0D3EA900E7E06B /* KanjiRenshuuConfig.plist in Resources */,
+				96AA97EC2E0D757F00E7E06B /* KanjiRenshuuConfig.plist in Resources */,
 				968C04F32D5C995B003BB0DA /* Index->Kanji.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
