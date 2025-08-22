@@ -19,11 +19,10 @@ func loadKanjiMapping() -> [String: [String]] {
     do {
         let data = try Data(contentsOf: url)
         let decodedData = try JSONDecoder().decode([String: [String]].self, from: data)
-        print("Loaded kanji mapping. Total entries: \(decodedData.count)")
-        for (key, value) in decodedData.prefix(5) {
-            print("Kanji: \(key), Files: \(value)")
-        }
-        
+        //        print("Loaded kanji mapping. Total entries: \(decodedData.count)")
+        //        for (key, value) in decodedData.prefix(5) {
+        //            print("Kanji: \(key), Files: \(value)")
+        //        }
         return decodedData
     } catch {
         fatalError("Failed to decode Index->Kanji.json from bundle: \(error)")

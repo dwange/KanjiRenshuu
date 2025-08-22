@@ -40,6 +40,10 @@ class MatchView: UIView {
     var onLeftButtonTapped: ((Int) -> Void)?
     var onRightButtonTapped: ((Int) -> Void)?
     
+    private var selectedLeftIndex: Int?
+    private var selectedRightIndex: Int?
+    
+    
     // MARK: - Initializers
     
     override init(frame: CGRect) {
@@ -100,12 +104,22 @@ class MatchView: UIView {
     
     @objc private func buttonTapped(_ sender: UIButton) {
         if leftButtons.contains(sender) {
+            selectedLeftIndex = sender.tag
+            highlightButton(sender, asSelected: true)
             onLeftButtonTapped?(sender.tag)
         } else if rightButtons.contains(sender) {
+            selectedRightIndex = sender.tag
             onRightButtonTapped?(sender.tag)
         }
     }
-     
+    
+    private func highlightButton(_ button: UIButton, asSelected: Bool) {
+        button.backgroundColor = asSelected ? .systemGreen : .white
+    }
+    
+    
+    
+    
     // MARK: - Methods
     
     func configureButtons(kanjiPairs: [(kanji: String, translation: String)]) {
@@ -129,18 +143,41 @@ class MatchView: UIView {
         }
     }
     
-    func updateButtonColors(leftIndex: Int, rightIndex: Int, isMatch: Bool) {
-         let color: UIColor = isMatch ? .systemGreen : .systemRed
-         
-         guard leftIndex < leftButtons.count, rightIndex < rightButtons.count else { return }
-         
-         leftButtons[leftIndex].backgroundColor = color
-         rightButtons[rightIndex].backgroundColor = color
-     }
+    func updateButtonColors(kanji: String, translation: String, isMatch: Bool) {
+        guard let leftButton = button(for: kanji, inLeft: true),
+              let rightButton = button(for: translation, inLeft: false) else { return }
+        
+        if isMatch {
+            leftButton.backgroundColor = .systemGreen
+            rightButton.backgroundColor = .systemGreen
+            UIView.animate(withDuration: 0.3) {
+                leftButton.alpha = 0.5
+                rightButton.alpha = 0.5
+            }
+            leftButton.isEnabled = false
+            rightButton.isEnabled = false
+        } else {
+            rightButton.backgroundColor = .systemRed
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                leftButton.backgroundColor = .white
+                rightButton.backgroundColor = .white
+            }
+        }
+    }
+    
+    
+    func button(for title: String, inLeft: Bool) -> UIButton? {
+        let buttons = inLeft ? leftButtons : rightButtons
+        return buttons.first(where: { $0.title(for: .normal) == title })
+    }
+    
     
     func resetButtonColors() {
-        (leftButtons + rightButtons).forEach {
-            $0.backgroundColor = .white
+        for button in (leftButtons + rightButtons) {
+            if button.isEnabled {
+                button.backgroundColor = .white
+                button.alpha = 1.0
+            }
         }
     }
 }

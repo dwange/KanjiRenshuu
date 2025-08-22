@@ -14,10 +14,11 @@ class MatchViewModel {
     private(set) var kanjiPairs: [(kanji: String, translation: String)] = []
     
     var onDataUpdate: (() -> Void)?
-    var onMatchResult: ((Bool, Int, Int) -> Void)?
     
-    private var selectedKanjiIndex: Int?
-    private var selectedTranslationIndex: Int?
+    private var selectedKanji: String?
+    private var selectedTranslation: String?
+    
+    var onMatchResult: ((Bool, String, String) -> Void)?
     
     // MARK: - Methods
     
@@ -33,33 +34,25 @@ class MatchViewModel {
     
     // MARK: - Methods (Select & Match)
     
-    func selectKanji(at index: Int) {
-        selectedKanjiIndex = index
+    func selectKanji(_ kanji: String) {
+        selectedKanji = kanji
         checkMatchIfPossible()
     }
     
-    func selectTranslation(at index: Int) {
-        selectedTranslationIndex = index
+    func selectTranslation(_ translation: String) {
+        selectedTranslation = translation
         checkMatchIfPossible()
     }
     
     private func checkMatchIfPossible() {
-        guard let kanjiIndex = selectedKanjiIndex,
-              let translationIndex = selectedTranslationIndex else {
-            return
-        }
+        guard let kanji = selectedKanji, let translation = selectedTranslation else { return }
         
-        let kanji = kanjiPairs[kanjiIndex].kanji
-        let translation = kanjiPairs[translationIndex].translation
+        let isMatch = kanjiPairs.contains(where: { $0.kanji == kanji && $0.translation == translation })
         
-        if kanjiPairs.contains(where: { $0.kanji == kanji && $0.translation == translation }) {
-            onMatchResult?(true, kanjiIndex, translationIndex)
-        } else {
-            onMatchResult?(false, kanjiIndex, translationIndex)
-        }
+        onMatchResult?(isMatch, kanji, translation)
         
-        selectedKanjiIndex = nil
-        selectedTranslationIndex = nil
+        selectedKanji = nil
+        selectedTranslation = nil
     }
 }
 

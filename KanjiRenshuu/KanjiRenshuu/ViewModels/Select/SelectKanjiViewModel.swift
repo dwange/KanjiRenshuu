@@ -20,7 +20,7 @@ final class SelectKanjiViewModel {
     // MARK: - Methods
     func fetchKanji() {
         kanjiManager.fetchAllKanji { [weak self] groupedKanji in
-            guard let self = self else { return }
+            guard let self else { return }
             
             let filteredGroupedKanji = groupedKanji.filter { $0.key != nil }
             self.kanjiByGrade = filteredGroupedKanji

@@ -44,22 +44,27 @@ class MatchViewController: UIViewController {
     
     private func setupBindings() {
         viewModel.onDataUpdate = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.matchView.configureButtons(kanjiPairs: self.viewModel.kanjiPairs)
             self.stopLoading()
         }
         
         matchView.onLeftButtonTapped = { [weak self] index in
-            self?.viewModel.selectKanji(at: index)
+            guard let self,
+                  let title = self.matchView.leftButtons[index].title(for: .normal) else { return }
+            
+            self.viewModel.selectKanji(title)
         }
         
         matchView.onRightButtonTapped = { [weak self] index in
-            self?.viewModel.selectTranslation(at: index)
+            guard let self,
+                  let title = self.matchView.rightButtons[index].title(for: .normal) else { return }
+            
+            self.viewModel.selectTranslation(title)
         }
         
-        viewModel.onMatchResult = { [weak self] isMatch, leftIndex, rightIndex in
-            guard let self = self else { return }
-            self.matchView.updateButtonColors(leftIndex: leftIndex, rightIndex: rightIndex, isMatch: isMatch)
+        viewModel.onMatchResult = { [weak self] isMatch, kanji, translation in
+            self?.matchView.updateButtonColors(kanji: kanji, translation: translation, isMatch: isMatch)
         }
     }
     

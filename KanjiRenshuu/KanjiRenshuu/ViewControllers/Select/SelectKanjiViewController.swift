@@ -10,7 +10,17 @@ import SnapKit
 
 class SelectKanjiViewController: UIViewController {
     
+    enum Mode { case packs, explore }
+    
     //MARK: - GUI Variables
+    
+    private lazy var segmentControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: ["Packs", "Explore"])
+        control.selectedSegmentIndex = 0
+        control.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
+        control.backgroundColor = .white
+        return control
+    }()
     
     private lazy var collectionView: UICollectionView = {
         let layout = createLayout()
@@ -28,6 +38,9 @@ class SelectKanjiViewController: UIViewController {
     //MARK: - Properties
     
     private let viewModel = SelectKanjiViewModel()
+    private let packsViewModel = PacksViewModel()
+    
+    private var currentMode: Mode = .packs
     
     private var kanjiLoadingView: KanjiLoadingView!
 
@@ -39,12 +52,17 @@ class SelectKanjiViewController: UIViewController {
         setupUI()
         bindViewModel()
         showKanjiLoadingAnimation()
+        packsViewModel.loadPacks()
         viewModel.fetchKanji()
     }
     
     //MARK: - Private methods
     
     private func setupUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(segmentControl)
         view.addSubview(collectionView)
         
         collectionView.register(SelectKanjiViewCell.self, forCellWithReuseIdentifier: "SelectKanjiViewCell")
@@ -54,11 +72,22 @@ class SelectKanjiViewController: UIViewController {
     }
     
     private func setupConstraints() {
-        collectionView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+        
+        segmentControl.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(8)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(segmentControl.snp.bottom).offset(8)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+    
+    @objc private func modeChanged() {
+        currentMode = segmentControl.selectedSegmentIndex == 0 ? .packs : .explore
+        let newLayout = createLayout()
+        collectionView.setCollectionViewLayout(newLayout, animated: true)
+        collectionView.reloadData()
     }
     
     private func createLayout() -> UICollectionViewCompositionalLayout {
@@ -119,24 +148,38 @@ extension SelectKanjiViewController: UICollectionViewDelegate {
 extension SelectKanjiViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.sortedGrades.count
+        switch currentMode {
+        case .packs:
+            return packsViewModel.packs.count
+        case .explore:
+            return viewModel.sortedGrades.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let grade = viewModel.sortedGrades[section]
-        return viewModel.kanjiByGrade[grade]?.count ?? 0
+        switch currentMode {
+        case .packs:
+            return packsViewModel.packs[section].kanji.count
+        case .explore:
+            let grade = viewModel.sortedGrades[section]
+            return viewModel.kanjiByGrade[grade]?.count ?? 0
+        }
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectKanjiViewCell", for: indexPath) as? SelectKanjiViewCell else {
-            return UICollectionViewCell()
-        }
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectKanjiViewCell", for: indexPath) as? SelectKanjiViewCell else { return UICollectionViewCell() }
         
-        let grade = viewModel.sortedGrades[indexPath.section]
-        if let kanjiList = viewModel.kanjiByGrade[grade] {
-            cell.configure(with: kanjiList[indexPath.item])
+        switch currentMode {
+        case .packs:
+            let character = packsViewModel.packs[indexPath.section].kanji[indexPath.item]
+            cell.configure(with: character)
+        case .explore:
+            let grade = viewModel.sortedGrades[indexPath.section]
+            if let kanjiList = viewModel.kanjiByGrade[grade] {
+                cell.configure(with: kanjiList[indexPath.item])
+            }
         }
-        
         cell.delegate = self
         return cell
     }
@@ -146,10 +189,13 @@ extension SelectKanjiViewController: UICollectionViewDataSource {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: KanjiSectionHeaderView.reuseIdentifier, for: indexPath) as! KanjiSectionHeaderView
         
-        let grade = viewModel.sortedGrades[indexPath.section]
-        let title = grade != nil ? "Grade \(grade!)" : "Ungraded Kanji"
-        
-        headerView.configure(with: title)
+        switch currentMode {
+        case .packs:
+            headerView.configure(with: packsViewModel.packs[indexPath.section].title)
+        case .explore:
+            let grade = viewModel.sortedGrades[indexPath.section]
+            headerView.configure(with: grade != nil ? "Grade \(grade!)" : "Ungraded Kanji")
+        }
         return headerView
     }
 }

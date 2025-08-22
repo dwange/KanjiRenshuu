@@ -1,0 +1,18 @@
+
+[
+  {
+    "id": "pack1",
+    "title": "First 5 Kanji",
+    "kanji": ["日", "人", "大", "小", "水"]
+  },
+  {
+    "id": "pack2",
+    "title": "Home & Travel",
+    "kanji": ["家", "木", "山", "車", "口"]
+  },
+  {
+    "id": "pack3",
+    "title": "Nature & Elements",
+    "kanji": ["火", "土", "空", "雨", "川"]
+  }
+]
