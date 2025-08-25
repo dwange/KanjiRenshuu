@@ -34,6 +34,10 @@
 		96AA98182E57443600E7E06B /* PacksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA98172E57443600E7E06B /* PacksViewModel.swift */; };
 		96AA981C2E585C2200E7E06B /* PackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA981B2E585C2200E7E06B /* PackModel.swift */; };
 		96AA98202E5882A100E7E06B /* packs.json in Resources */ = {isa = PBXBuildFile; fileRef = 96AA981F2E5882A100E7E06B /* packs.json */; };
+		96AA98222E5C6DC400E7E06B /* AllKanjiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA98212E5C6DC400E7E06B /* AllKanjiViewController.swift */; };
+		96AA98242E5C6DD700E7E06B /* PacksKanjiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA98232E5C6DD700E7E06B /* PacksKanjiViewController.swift */; };
+		96AA98282E5C732700E7E06B /* KanjiCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA98272E5C732700E7E06B /* KanjiCollectionViewController.swift */; };
+		96AA982A2E5C7E2100E7E06B /* UIViewController extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AA98292E5C7E2100E7E06B /* UIViewController extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +71,10 @@
 		96AA98172E57443600E7E06B /* PacksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacksViewModel.swift; sourceTree = "<group>"; };
 		96AA981B2E585C2200E7E06B /* PackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackModel.swift; sourceTree = "<group>"; };
 		96AA981F2E5882A100E7E06B /* packs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = packs.json; sourceTree = "<group>"; };
+		96AA98212E5C6DC400E7E06B /* AllKanjiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllKanjiViewController.swift; sourceTree = "<group>"; };
+		96AA98232E5C6DD700E7E06B /* PacksKanjiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacksKanjiViewController.swift; sourceTree = "<group>"; };
+		96AA98272E5C732700E7E06B /* KanjiCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiCollectionViewController.swift; sourceTree = "<group>"; };
+		96AA98292E5C7E2100E7E06B /* UIViewController extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController extensions.swift"; sourceTree = "<group>"; };
 		C9D7A76E101D959F7A3587EB /* Pods-KanjiRenshuu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiRenshuu.release.xcconfig"; path = "Target Support Files/Pods-KanjiRenshuu/Pods-KanjiRenshuu.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -108,12 +116,12 @@
 		960C74F42D3FBA8A00658569 = {
 			isa = PBXGroup;
 			children = (
-				96AA981F2E5882A100E7E06B /* packs.json */,
 				96AA98142E37C1E900E7E06B /* DemoAssets */,
 				960C74FF2D3FBA8A00658569 /* KanjiRenshuu */,
 				968C04F42D5C9B68003BB0DA /* KanjiSVG */,
 				96AA96F32DD777A400E7E06B /* LoadingKanji */,
 				968C04F22D5C995B003BB0DA /* Index->Kanji.json */,
+				96AA981F2E5882A100E7E06B /* packs.json */,
 				960C75092D3FBA8F00658569 /* Assets.xcassets */,
 				96AA97EB2E0D757F00E7E06B /* KanjiRenshuuConfig.plist */,
 				96AA97E92E0D47DF00E7E06B /* Info.plist */,
@@ -169,6 +177,7 @@
 			children = (
 				96AA97A32E0C115B00E7E06B /* UIStackView extentions.swift */,
 				96AA97A42E0C115B00E7E06B /* UIView extensions.swift */,
+				96AA98292E5C7E2100E7E06B /* UIViewController extensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -202,6 +211,9 @@
 			children = (
 				96AA97AC2E0C115B00E7E06B /* SelectKanjiViewCell.swift */,
 				96AA97AD2E0C115B00E7E06B /* SelectKanjiViewController.swift */,
+				96AA98272E5C732700E7E06B /* KanjiCollectionViewController.swift */,
+				96AA98212E5C6DC400E7E06B /* AllKanjiViewController.swift */,
+				96AA98232E5C6DD700E7E06B /* PacksKanjiViewController.swift */,
 			);
 			path = Select;
 			sourceTree = "<group>";
@@ -427,13 +439,17 @@
 				96AA97CA2E0C115B00E7E06B /* MatchView.swift in Sources */,
 				96AA97CB2E0C115B00E7E06B /* SelectKanjiViewModel.swift in Sources */,
 				96AA97CC2E0C115B00E7E06B /* DrawKanjiViewModel.swift in Sources */,
+				96AA98242E5C6DD700E7E06B /* PacksKanjiViewController.swift in Sources */,
 				96AA97CD2E0C115B00E7E06B /* SelectKanjiViewController.swift in Sources */,
+				96AA982A2E5C7E2100E7E06B /* UIViewController extensions.swift in Sources */,
 				96AA97CE2E0C115B00E7E06B /* KanjiSVGLoader.swift in Sources */,
+				96AA98222E5C6DC400E7E06B /* AllKanjiViewController.swift in Sources */,
 				96AA97CF2E0C115B00E7E06B /* UIView extensions.swift in Sources */,
 				96AA97D02E0C115B00E7E06B /* KanjiLoadingView.swift in Sources */,
 				96AA97D22E0C115B00E7E06B /* KanjiObject.swift in Sources */,
 				96AA97D32E0C115B00E7E06B /* MatchViewModel.swift in Sources */,
 				96AA981C2E585C2200E7E06B /* PackModel.swift in Sources */,
+				96AA98282E5C732700E7E06B /* KanjiCollectionViewController.swift in Sources */,
 				96AA97D42E0C115B00E7E06B /* UIStackView extentions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

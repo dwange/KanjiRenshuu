@@ -24,16 +24,17 @@ class DrawKanjiViewModel {
     // MARK: - Methods
     
     func fetchKanjiData() {
-        guard let kanji = kanji else { return }
+        guard let kanji else { return }
         
         kanjiDetailManager.fetchKanjiDetails(kanji: kanji) { [weak self] kanjiObject in
-            guard let self = self else { return }
-            if let kanjiObject = kanjiObject {
+            guard let self else { return }
+            if let kanjiObject {
                 self.fullTranslationText = kanjiObject.kanji.meaning.english
                 self.kanjiUpdated?(kanjiObject)
             } else {
                 self.errorOccurred?()
             }
+            
         }
     }
     
