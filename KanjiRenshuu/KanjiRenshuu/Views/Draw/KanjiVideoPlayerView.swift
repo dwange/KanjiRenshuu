@@ -79,7 +79,7 @@ class KanjiVideoPlayerView: UIView {
     }
     
     @objc private func playTapped() {
-        guard let videoURL = videoURL else { return }
+        guard let videoURL else { return }
         
         playButton.isHidden = true
         svgImageView.isHidden = true

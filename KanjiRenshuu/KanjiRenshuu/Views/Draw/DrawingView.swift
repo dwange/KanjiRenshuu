@@ -20,13 +20,13 @@ class DrawingView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = .appCanvasBackground
         isUserInteractionEnabled = true
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        backgroundColor = .white
+        backgroundColor = .appCanvasBackground
         isUserInteractionEnabled = true
     }
     

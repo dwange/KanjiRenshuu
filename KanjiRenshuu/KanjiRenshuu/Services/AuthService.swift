@@ -47,6 +47,13 @@ final class AuthService {
         }
     }
     
+    func sendPasswordReset(email: String, completion: @escaping (Error?) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            completion(error)
+        }
+    }
+
+    
     func getCurrentUser() -> User? {
         return Auth.auth().currentUser
     }

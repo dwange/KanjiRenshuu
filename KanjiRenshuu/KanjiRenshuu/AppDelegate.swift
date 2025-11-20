@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,18 +15,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-       
+        
         FirebaseApp.configure()
-
-        self.window = UIWindow(frame: UIScreen.main.bounds)
-
-        if let window = window {
-            let navigationController = UINavigationController()
-            navigationController.viewControllers = [AuthViewController()]
-            window.rootViewController = navigationController
-            window.makeKeyAndVisible()
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        
+        if Auth.auth().currentUser != nil {
+            window?.rootViewController = UINavigationController(rootViewController: HomeViewController())
+        } else {
+            window?.rootViewController = UINavigationController(rootViewController: AuthViewController())
         }
-
+        
+        window?.makeKeyAndVisible()
+        
         return true
     }
     

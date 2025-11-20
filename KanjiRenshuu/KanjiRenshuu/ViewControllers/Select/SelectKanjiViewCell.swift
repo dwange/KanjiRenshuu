@@ -20,11 +20,11 @@ final class SelectKanjiViewCell: UICollectionViewCell {
     private let kanjiButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
+        button.setTitleColor(.appText, for: .normal)
+        button.backgroundColor = .appKanjiSquare
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.layer.borderColor = UIColor.appKanjiSquareBorder.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(kanjiButtonTapped), for: .touchUpInside)
         

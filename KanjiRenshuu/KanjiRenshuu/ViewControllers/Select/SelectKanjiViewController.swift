@@ -16,7 +16,7 @@ class SelectKanjiViewController: UIViewController {
         let control = UISegmentedControl(items: ["Packs", "Explore"])
         control.selectedSegmentIndex = 0
         control.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
-        control.backgroundColor = .white
+        control.backgroundColor = .appAccent
         return control
     }()
     
@@ -39,7 +39,7 @@ class SelectKanjiViewController: UIViewController {
     
     private func setupUI() {
         
-        view.backgroundColor = .white
+        view.backgroundColor = .appBackground
         view.addSubview(segmentControl)
         setupConstraints()
     }

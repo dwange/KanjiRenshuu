@@ -16,7 +16,7 @@ class HomeViewController: UIViewController {
         let label = UILabel()
         label.text = "Kanji Renshuu"
         label.font = UIFont(name: "Arial Bold", size: 35)
-        label.textColor = .black
+        label.textColor = .appText
         label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
@@ -25,11 +25,11 @@ class HomeViewController: UIViewController {
     private lazy var firstButton: UIButton = {
         let button = UIButton()
         button.setTitle("Draw", for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.appButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "Arial Bold", size: 25)
-        button.backgroundColor = .systemGreen
+        button.backgroundColor = .appPrimary
         button.layer.cornerRadius = cornerRadius
-        button.layer.shadowColor = UIColor.systemGreen.cgColor
+        button.layer.shadowColor = UIColor.appShadowMedium.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
@@ -42,11 +42,11 @@ class HomeViewController: UIViewController {
     private lazy var secondButton: UIButton = {
         let button = UIButton()
         button.setTitle("Match", for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.appButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "Arial Bold", size: 25)
-        button.backgroundColor = .systemCyan
+        button.backgroundColor = .appAccentAlt
         button.layer.cornerRadius = cornerRadius
-        button.layer.shadowColor = UIColor.systemCyan.cgColor
+        button.layer.shadowColor = UIColor.appShadowMedium.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
@@ -86,7 +86,7 @@ class HomeViewController: UIViewController {
         view.addSubview(firstButton)
         view.addSubview(secondButton)
         
-        view.backgroundColor = .white
+        view.backgroundColor = .appBackground
         
         setupConstraints()
         

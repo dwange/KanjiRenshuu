@@ -19,9 +19,9 @@ final class AuthViewController: UIViewController {
     
     private let cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .appCardBackground
         view.layer.cornerRadius = 16
-        view.layer.shadowColor = UIColor.appPrimary.cgColor
+        view.layer.shadowColor = UIColor.appShadowLight.cgColor
         view.layer.shadowOpacity = 0.1
         view.layer.shadowOffset = CGSize(width: 0, height: 5)
         view.layer.shadowRadius = 10
@@ -32,8 +32,8 @@ final class AuthViewController: UIViewController {
         let control = UISegmentedControl(items: ["Sign In", "Sign Up"])
         control.selectedSegmentIndex = 0
         control.backgroundColor = .clear
-        control.selectedSegmentTintColor = .appPrimary
-        control.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        control.selectedSegmentTintColor = .appTabActive
+        control.setTitleTextAttributes([.foregroundColor: UIColor.appButtonText], for: .selected)
         control.setTitleTextAttributes([.foregroundColor: UIColor.appText], for: .normal)
         return control
     }()
@@ -42,21 +42,31 @@ final class AuthViewController: UIViewController {
     private let passwordField = AuthTextField(placeholder: "Password", isSecure: true)
     private let confirmPasswordField = AuthTextField(placeholder: "Confirm Password", isSecure: true)
     
+    
     private let actionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Log In", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.backgroundColor = .appPrimary
-        button.tintColor = .white
+        button.tintColor = .appButtonText
+        button.layer.shadowColor = UIColor.appButtonShadow.cgColor
         button.layer.cornerRadius = 10
         return button
         
     }()
     
+    private let forgotPasswordButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Forgot password?", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        button.contentHorizontalAlignment = .right
+        button.isHidden = false
+        return button
+    }()
     
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .red
+        label.textColor = .appError
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 0
@@ -71,6 +81,8 @@ final class AuthViewController: UIViewController {
         }
     }
     
+    private let viewModel = AuthViewModel()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -78,6 +90,8 @@ final class AuthViewController: UIViewController {
         
         configureUI()
         setupActions()
+        bindViewModel()
+
     }
     
     //MARK: - Private methods
@@ -85,7 +99,7 @@ final class AuthViewController: UIViewController {
     private func configureUI() {
         view.backgroundColor = .appBackground
         view.addSubview(cardView)
-        cardView.addSubViews([segmentedControl, emailField, passwordField, confirmPasswordField, actionButton, messageLabel])
+        cardView.addSubViews([segmentedControl, emailField, passwordField, forgotPasswordButton, confirmPasswordField, actionButton, messageLabel])
         
         setupConstraints()
     }
@@ -114,6 +128,12 @@ final class AuthViewController: UIViewController {
             make.leading.trailing.height.equalTo(emailField)
         }
         
+        forgotPasswordButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordField.snp.bottom).offset(6)
+            make.trailing.equalTo(passwordField)
+            make.height.equalTo(20)
+        }
+
         confirmPasswordField.snp.makeConstraints { make in
             make.top.equalTo(passwordField.snp.bottom).offset(15)
             make.leading.trailing.height.equalTo(emailField)
@@ -137,6 +157,8 @@ final class AuthViewController: UIViewController {
     private func setupActions() {
         segmentedControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+        forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
+
     }
     
     @objc private func modeChanged() {
@@ -154,39 +176,51 @@ final class AuthViewController: UIViewController {
         
         switch mode {
         case .signIn:
-            AuthService.shared.signIn(email: email, password: password) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let user):
-                        self?.messageLabel.textColor = .systemGreen
-                        self?.messageLabel.text = "Welcome back, \(user.email ?? "")!"
-                    case .failure(let error):
-                        self?.messageLabel.textColor = .systemRed
-                        self?.messageLabel.text = error.localizedDescription
-                    }
-                }
-            }
-            
+            viewModel.signIn(email: email, password: password)
         case .signUp:
             guard let confirm = confirmPasswordField.text, password == confirm else {
                 messageLabel.text = "Passwords do not match."
                 return
             }
-            
-            AuthService.shared.signUp(email: email, password: password) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let user):
-                        self?.messageLabel.textColor = .systemGreen
-                        self?.messageLabel.text = "Account created for \(user.email ?? "")!"
-                    case .failure(let error):
-                        self?.messageLabel.textColor = .systemRed
-                        self?.messageLabel.text = error.localizedDescription
-                    }
-                }
-            }
+            viewModel.signUp(email: email, password: password)
         }
     }
+    
+    @objc private func forgotPasswordTapped() {
+        let emailCandidate = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if !emailCandidate.isEmpty {
+            presentConfirmResetAlert(email: emailCandidate)
+        } else {
+            let alert = UIAlertController(title: "Reset password", message: "Enter the email associated with your account", preferredStyle: .alert)
+            alert.addTextField { textField in
+                textField.placeholder = "Email"
+                textField.keyboardType = .emailAddress
+                textField.autocapitalizationType = .none
+            }
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Send", style: .default, handler: { [weak self] _ in
+                guard let email = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !email.isEmpty else {
+                    self?.messageLabel.textColor = .systemRed
+                    self?.messageLabel.text = "Please enter an email address."
+                    return
+                }
+                self?.presentConfirmResetAlert(email: email)
+            }))
+            present(alert, animated: true)
+        }
+    }
+
+    private func presentConfirmResetAlert(email: String) {
+        let alert = UIAlertController(title: "Send reset email?", message: "Send password reset link to\n\(email)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Send", style: .default, handler: { [weak self] _ in
+            self?.viewModel.sendPasswordReset(email: email)
+        }))
+        present(alert, animated: true)
+    }
+
     
     private func updateUIForMode(animated: Bool) {
         let isSignIn = (mode == .signIn)
@@ -200,6 +234,33 @@ final class AuthViewController: UIViewController {
             })
         }
     }
+    
+    private func bindViewModel() {
+        viewModel.onAuthSuccess = { [weak self] user in
+            self?.messageLabel.textColor = .systemGreen
+            self?.messageLabel.text = "Welcome, \(user.email ?? "")!"
+            
+            let homeVC = HomeViewController()
+            self?.navigationController?.setViewControllers([homeVC], animated: true)
+        }
+        
+        viewModel.onAuthError = { [weak self] message in
+            self?.messageLabel.textColor = .systemRed
+            self?.messageLabel.text = message
+        }
+        
+        viewModel.onPasswordResetSent = { [weak self] in
+            guard let self = self else { return }
+            self.messageLabel.textColor = .systemGreen
+            self.messageLabel.text = "Password reset email sent. Check your inbox (and spam)."
+        }
+        
+        viewModel.onLoadingStateChange = { [weak self] isLoading in
+            self?.actionButton.isEnabled = !isLoading
+            self?.actionButton.alpha = isLoading ? 0.5 : 1.0
+        }
+    }
+
 }
 
 final class AuthTextField: UITextField {
@@ -211,6 +272,7 @@ final class AuthTextField: UITextField {
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
         self.clearButtonMode = .whileEditing
+        self.textColor = .appPlaceholder
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }

@@ -46,7 +46,7 @@ class DrawViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .left
         label.font = .boldSystemFont(ofSize: 15)
-        label.textColor = .systemGray
+        label.textColor = .appText
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.5
         label.numberOfLines = 0
@@ -59,7 +59,7 @@ class DrawViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .left
         label.font = .boldSystemFont(ofSize: 15)
-        label.textColor = .systemGray
+        label.textColor = .appText
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.5
         label.numberOfLines = 0
@@ -88,7 +88,7 @@ class DrawViewController: UIViewController {
     
     private let drawingView: DrawingView = {
         let view = DrawingView()
-        view.backgroundColor = .white
+        view.backgroundColor = .appBackground
         
         return view
     }()
@@ -105,12 +105,12 @@ class DrawViewController: UIViewController {
     
     private let retryButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .systemCyan
+        button.backgroundColor = .appAccentAlt
         button.layer.cornerRadius = 15
         button.setTitle("Retry".uppercased(), for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.appButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "Arial Bold", size: 15)
-        button.layer.shadowColor = UIColor.systemCyan.cgColor
+        button.layer.shadowColor = UIColor.appShadowMedium.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
@@ -122,13 +122,12 @@ class DrawViewController: UIViewController {
     
     private let continueButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .systemGreen
+        button.backgroundColor = .appPrimary
         button.layer.cornerRadius = 15
         button.setTitle("Continue".uppercased(), for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.appButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "Arial Bold", size: 15)
-        button.backgroundColor = .systemGreen
-        button.layer.shadowColor = UIColor.systemGreen.cgColor
+        button.layer.shadowColor = UIColor.appShadowMedium.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 5
@@ -165,7 +164,7 @@ class DrawViewController: UIViewController {
     //MARK: - Private methods
     
     func configureUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .appBackground
         view.addSubview(stackView)
         
         kanjiInfoStackView.addArrangedSubviews([kanjiVideoPlayerView, readingsStackView])
