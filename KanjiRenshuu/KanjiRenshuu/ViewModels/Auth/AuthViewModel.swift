@@ -66,4 +66,8 @@ final class AuthViewModel {
                 }
             }
         }
+    
+    func signOut() {
+       authService.signOut()
+    }
 }

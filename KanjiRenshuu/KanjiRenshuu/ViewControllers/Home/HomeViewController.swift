@@ -56,15 +56,35 @@ class HomeViewController: UIViewController {
         return button
     }()
     
+    private lazy var logoutButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Log Out", style: .plain, target: self, action: #selector(logoutTapped))
+        return button
+    }()
+    
     //MARK: - Properties
     
     private let cornerRadius: CGFloat = 20
     private let buttonHeight: CGFloat = 80
     
+    private let authViewModel: AuthViewModel
+
+    //MARK: - Initializations
+    
+    init(viewModel: AuthViewModel = AuthViewModel()) {
+        self.authViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = logoutButton
+
         
         configureUI()
     }
@@ -80,6 +100,17 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(MatchViewController(), animated: true)
         
     }
+    
+    @objc private func logoutTapped() {
+            let alert = UIAlertController(title: "Log Out", message: "Are you sure?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { [weak self] _ in
+                self?.authViewModel.signOut()
+                let authVC = AuthViewController()
+                self?.navigationController?.setViewControllers([authVC], animated: true)
+            }))
+            present(alert, animated: true)
+        }
     
     private func configureUI() {
         view.addSubview(titleLabel)
